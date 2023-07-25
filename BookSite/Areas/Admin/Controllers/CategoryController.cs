@@ -1,33 +1,36 @@
-﻿using Book.Models;
-using BookSite.Database;
+﻿using Book.Database;
 using Microsoft.AspNetCore.Mvc;
+using BookSite.Database;
+using Book.Models;
+using Book.Database.Repository.IRepository;
 
-namespace BookSite.Controllers
+namespace BookSite.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // Create Category 
         public IActionResult CategoryView()
         {
-            IEnumerable<Category> objCategories = _db.Categories;
+            IEnumerable<Category> objCategories = _unitOfWork.CategoryRepository.GetAll().ToList();
             return View(objCategories);
         }
         public IActionResult CreateCategory(Category cat)
         {
-            if(cat.Name == cat.DisplayOder.ToString())
+            if (cat.Name == cat.DisplayOder.ToString())
             {
                 ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _db.Categories.Add(cat);
-                _db.SaveChanges();
+                _unitOfWork.CategoryRepository.Add(cat);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Created Successfully";
                 return RedirectToAction("CategoryView");
             }
@@ -35,15 +38,15 @@ namespace BookSite.Controllers
         }
 
         // Edit Category 
-        public IActionResult EditCategory(int? id)
+        public IActionResult EditCategory(int? catId)
         {
-            if(id == null || id == 0)
+            if (catId == null || catId == 0)
             {
                 return NotFound();
             }
 
-            Category? categoryFromDb = _db.Categories.FirstOrDefault(u=>u.Id==id);
-            if(categoryFromDb == null)
+            Category? categoryFromDb = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.CatId == catId);
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -54,8 +57,8 @@ namespace BookSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(cat);
-                _db.SaveChanges();
+                _unitOfWork.CategoryRepository.Update(cat);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Updated Successfully";
                 return RedirectToAction("CategoryView");
             }
@@ -63,14 +66,14 @@ namespace BookSite.Controllers
         }
 
         // Edit Category 
-        public IActionResult DeleteCategory(int? id)
+        public IActionResult DeleteCategory(int? catId)
         {
-            if (id == null || id == 0)
+            if (catId == null || catId == 0)
             {
                 return NotFound();
             }
 
-            Category? categoryFromDb = _db.Categories.FirstOrDefault(u => u.Id == id);
+            Category? categoryFromDb = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.CatId == catId);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -79,15 +82,15 @@ namespace BookSite.Controllers
         }
 
         [HttpPost, ActionName("DeleteCategory")]
-        public IActionResult SaveDeleteCategory(int? id)
+        public IActionResult SaveDeleteCategory(int? catId)
         {
-            Category? cat = _db.Categories.FirstOrDefault(c => c.Id==id);
-            if(cat == null)
+            Category? cat = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.CatId == catId);
+            if (cat == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(cat);
-            _db.SaveChanges();
+            _unitOfWork.CategoryRepository.Remove(cat);
+            _unitOfWork.Save();
             TempData["success"] = "Category Deleted Successfully";
             return RedirectToAction("CategoryView");
         }

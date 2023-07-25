@@ -1,4 +1,4 @@
-﻿namespace Book.Utilities
+﻿namespace Book.Database
 {
     public class Class1
     {

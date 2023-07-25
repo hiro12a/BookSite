@@ -17,9 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Booksite.DataAccess\Book.DataAccess.csproj" />
-    <ProjectReference Include="..\Booksite.Models\Book.Models.csproj" />
-    <ProjectReference Include="..\Booksite.Utilities\Book.Utilities.csproj" />
+    <ProjectReference Include="..\Book.Database\Book.Database.csproj" />
+    <ProjectReference Include="..\Book.Models\Book.Models.csproj" />
+    <ProjectReference Include="..\Book.Utilities\Book.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\Products\" />
   </ItemGroup>
 
 </Project>

@@ -21,11 +21,26 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="CategoryView">Category</a>
+                            <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="CategoryView">Category</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="ViewProduct">Product</a>
+                        </li>
+                        <!--Dropdown-->
+                        <div class="nav-item dropdown">
+                            <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Dropdown
+                            </button>
+                            <div class="dropdown-menu">
+                                <ul class="m-0 p-0" style="list-style:none;">
+                                    <li ><a asp-area="" asp-controller="" asp-action="" class="dropdown-item">Action</a></li>
+                                    <li><a asp-area="" asp-controller="" asp-action="" class="dropdown-item">Romance</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </ul>
                 </div>
             </div>

@@ -17,8 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Booksite.Models\Book.Models.csproj" />
+    <ProjectReference Include="..\Book.Models\Book.Models.csproj" />
     <ProjectReference Include="..\Book.Utilities\Book.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

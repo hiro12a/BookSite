@@ -1,4 +1,4 @@
-﻿using Book.Models;
+﻿using Book.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookSite.Database
