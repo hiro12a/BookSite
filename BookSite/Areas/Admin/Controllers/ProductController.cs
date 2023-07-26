@@ -96,7 +96,8 @@ namespace BookSite.Areas.Admin.Controllers
             return View();
         }
 
-        // Delete Product
+        /*
+         * // Delete Product
         public IActionResult DeleteProduct(int? id)
         {
             if (id == null || id == 0)
@@ -123,7 +124,38 @@ namespace BookSite.Areas.Admin.Controllers
                 return RedirectToAction("ViewProduct");
             }
             return View();
+        }*/
+
+        #region API Calls
+        [HttpGet]
+        public IActionResult GetAll(int? id)
+        {
+            List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
+            return Json(new {data = products});
         }
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var prodToDelete = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.ProductId == id);
+            if(prodToDelete == null)
+            {
+                return Json(new { success = false, message = "Erorr while Deleting" });
+            }
+
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, prodToDelete.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _unitOfWork.ProductRepository.Remove(prodToDelete);
+            _unitOfWork.Save();
+
+            List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = products });
+        }
+        #endregion
 
     }
 }
