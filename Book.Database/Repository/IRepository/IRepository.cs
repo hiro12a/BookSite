@@ -11,7 +11,7 @@ namespace Book.Database.Repository.IRepository
     {
         // T - Category
         IEnumerable<T> GetAll(string? includeProperties = null);
-        T GetFirstOrDefault(Expression<Func<T,bool>> filter, string? includeProperties = null); // Similar to linq expression, general syntac
+        T Get(Expression<Func<T,bool>> filter, string? includeProperties = null); // Similar to linq expression, general syntac
         void Add(T item);
         void Remove(T item);
         void RemoveRange(IEnumerable<T> items);

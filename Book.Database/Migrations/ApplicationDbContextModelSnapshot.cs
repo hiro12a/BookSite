@@ -81,10 +81,6 @@ namespace Book.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -118,7 +114,6 @@ namespace Book.Database.Migrations
                             Author = "John Doe",
                             CategoryId = 1,
                             Description = "A fortune teller discovered a huge secrete that will change his life forver",
-                            ISBN = "SD839201784",
                             ImageUrl = "",
                             ListPrice = 99.0,
                             Price = 90.0,
@@ -132,7 +127,6 @@ namespace Book.Database.Migrations
                             Author = "Thomas Wayne",
                             CategoryId = 2,
                             Description = "Read about how this young woman came from being poor to being rich",
-                            ISBN = "DJ849273891",
                             ImageUrl = "",
                             ListPrice = 40.0,
                             Price = 30.0,
@@ -146,7 +140,6 @@ namespace Book.Database.Migrations
                             Author = "Neko Sorry",
                             CategoryId = 3,
                             Description = "A book on how to be a lazy bum",
-                            ISBN = "SK829363432",
                             ImageUrl = "",
                             ListPrice = 60.0,
                             Price = 50.0,
@@ -160,7 +153,6 @@ namespace Book.Database.Migrations
                             Author = "Man Two",
                             CategoryId = 1,
                             Description = "A story of how a man who doesn't like to shower became a hero",
-                            ISBN = "SD8764928487",
                             ImageUrl = "",
                             ListPrice = 50.0,
                             Price = 40.0,
@@ -174,7 +166,6 @@ namespace Book.Database.Migrations
                             Author = "Nick Enry",
                             CategoryId = 2,
                             Description = "Even though he is small, he has the strongest will of them all",
-                            ISBN = "MX456482165",
                             ImageUrl = "",
                             ListPrice = 75.0,
                             Price = 65.0,

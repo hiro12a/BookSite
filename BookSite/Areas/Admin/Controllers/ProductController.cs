@@ -21,7 +21,6 @@ namespace BookSite.Areas.Admin.Controllers
         public IActionResult ViewProduct()
         {
             List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category").ToList(); // Get list of product                
-
             return View(products);
         }
 
@@ -32,20 +31,25 @@ namespace BookSite.Areas.Admin.Controllers
             ProductVM productVM = new()
             {
                 //  Get Category while using SelectListItem
-                CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(u => new SelectListItem(
-                    text: u.Name,
-                    value: u.CatId.ToString()
-                )),
+                CategoryList = _unitOfWork.CategoryRepository.
+                GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.CatId.ToString(),
+                }),
                 Product = new Product()
+
             };
-            if(id == null || id == 0)
+
+            if (id == null || id == 0)
             {
+                // Create
                 return View(productVM);
             }
             else
             {
-                // Update
-                productVM.Product = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.ProductId == id);
+                // Update, only return one record
+                productVM.Product = _unitOfWork.ProductRepository.Get(u => u.ProductId == id);
                 return View(productVM);
             }
         }
@@ -54,16 +58,17 @@ namespace BookSite.Areas.Admin.Controllers
         {
             if(ModelState.IsValid)
             {
-                string rootPath = _webHostEnvironment.WebRootPath; // Get root path
+                string wwwRootPath = _webHostEnvironment.WebRootPath; // Get root path
                 if(file != null)
                 {
                     string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName); // Gives random name for file
-                    string productPath = Path.Combine(rootPath, @"Images\Products\"); // Get path
+                    string productPath = Path.Combine(wwwRootPath, @"Images\Products\"); // Get path
                     
                     if (!string.IsNullOrEmpty(prod.Product.ImageUrl)) // Checks if image is not null
                     {
                         // Delete Old image
-                        var oldImagePath = Path.Combine(rootPath, prod.Product.ImageUrl.TrimStart('\\'));
+                        var oldImagePath = 
+                            Path.Combine(wwwRootPath, prod.Product.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -77,9 +82,8 @@ namespace BookSite.Areas.Admin.Controllers
                     }
                     prod.Product.ImageUrl = @"\Images\Products\" + filename;
                 }
-
-                // Check whether to add or update 
-                if(prod.Product.ProductId == 0)
+                // Check whether to add or update              
+                if (prod.Product.ProductId == 0)
                 {
                     _unitOfWork.ProductRepository.Add(prod.Product);
                 }
@@ -92,39 +96,16 @@ namespace BookSite.Areas.Admin.Controllers
                 TempData["success"] = "Product created successfully";
                 return RedirectToAction("ViewProduct"); // Return to Product Homepage
             }
-
-            return View();
-        }
-
-        /*
-         * // Delete Product
-        public IActionResult DeleteProduct(int? id)
-        {
-            if (id == null || id == 0)
+            else
             {
-                return NotFound();
-            }
-
-            Product? product = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.ProductId == id); // Find product by ID
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-        [HttpPost, ActionName("DeleteProduct")]
-        public IActionResult SaveDeleteProduct(int? id)
-        {
-            Product? product = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.ProductId == id);
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.ProductRepository.Remove(product);
-                _unitOfWork.Save();
-                return RedirectToAction("ViewProduct");
+                prod.CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value  = u.CatId.ToString(),
+                });
             }
             return View();
-        }*/
+        }
 
         #region API Calls
         [HttpGet]
@@ -137,7 +118,7 @@ namespace BookSite.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            var prodToDelete = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.ProductId == id);
+            var prodToDelete = _unitOfWork.ProductRepository.Get(u => u.ProductId == id);
             if(prodToDelete == null)
             {
                 return Json(new { success = false, message = "Erorr while Deleting" });

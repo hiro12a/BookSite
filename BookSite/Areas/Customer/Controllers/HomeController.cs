@@ -20,8 +20,15 @@ namespace BookSite.Areas.Customer.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category");
-            return View();
+            return View(products);
         }
+
+        public IActionResult Details(int? id)
+        {
+            Product products = _unitOfWork.ProductRepository.Get(u=>u.ProductId == id, includeProperties: "Category");
+            return View(products);
+        }
+
 
         public IActionResult Privacy()
         {

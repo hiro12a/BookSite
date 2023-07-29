@@ -45,7 +45,7 @@ namespace BookSite.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.CatId == catId);
+            Category? categoryFromDb = _unitOfWork.CategoryRepository.Get(u => u.CatId == catId);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace BookSite.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _unitOfWork.CategoryRepository.GetFirstOrDefault(u => u.CatId == catId);
+            Category? categoryFromDb = _unitOfWork.CategoryRepository.Get(u => u.CatId == catId);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -84,7 +84,7 @@ namespace BookSite.Areas.Admin.Controllers
         [HttpPost, ActionName("DeleteCategory")]
         public IActionResult SaveDeleteCategory(int? catId)
         {
-            Category? cat = _unitOfWork.CategoryRepository.GetFirstOrDefault(c => c.CatId == catId);
+            Category? cat = _unitOfWork.CategoryRepository.Get(c => c.CatId == catId);
             if (cat == null)
             {
                 return NotFound();

@@ -17,31 +17,10 @@ namespace Book.Database.Repository
         {
             _db = db;
         }
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
 
         public void Update(Product obj)
         {
-            var objFromDb = _db.Products.FirstOrDefault(u => u.ProductId == obj.ProductId);
-            // Manual mapping
-            if (objFromDb != null)
-            {
-                obj.Title = objFromDb.Title;
-                obj.Description = objFromDb.Description;
-                obj.ISBN = objFromDb.ISBN;
-                obj.Price = objFromDb.Price;
-                obj.ListPrice = objFromDb.ListPrice;
-                obj.Price50 = objFromDb.Price50;
-                obj.Price100 = objFromDb.Price100;
-                obj.CategoryId = objFromDb.CategoryId;
-                obj.Author = objFromDb.Author;
-                if(obj.ImageUrl != null)
-                {
-                    obj.ImageUrl = objFromDb.ImageUrl;
-                }
-            }
+            _db.Products.Update(obj);
         }
     }
 }

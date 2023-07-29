@@ -23,29 +23,24 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="CategoryView">Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="ViewProduct">Product</a>
                         </li>
                         <!--Dropdown-->
                         <div class="nav-item dropdown">
                             <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Dropdown
+                                Content Management
                             </button>
                             <div class="dropdown-menu">
                                 <ul class="m-0 p-0" style="list-style:none;">
-                                    <li ><a asp-area="" asp-controller="" asp-action="" class="dropdown-item">Action</a></li>
-                                    <li><a asp-area="" asp-controller="" asp-action="" class="dropdown-item">Romance</a></li>
+                                    <li><a asp-area="Admin" asp-controller="Category" asp-action="CategoryView" class="dropdown-item">Category</a></li>
+                                    <li><a asp-area="Admin" asp-controller="Product" asp-action="ViewProduct" class="dropdown-item">Product</a></li>
                                 </ul>
                             </div>
                         </div>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -70,6 +65,8 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <!--Sweet Alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--Rich Text Editor-->
+    <script src="https://cdn.tiny.cloud/1/shwfri1auffffej06ejph94684e40vcid350n7d5y1zt1vy2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

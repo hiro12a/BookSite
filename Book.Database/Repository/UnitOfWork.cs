@@ -25,5 +25,9 @@ namespace Book.Database.Repository
         {
             _db.SaveChanges();
         }
+        public void Update()
+        {
+            _db.UpdateRange();
+        }
     }
 }

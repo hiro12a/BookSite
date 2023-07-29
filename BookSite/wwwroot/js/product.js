@@ -8,10 +8,9 @@ function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": { url: '/Admin/Product/Getall'},
         "columns": [
-            { data: 'title', "width":"25%" },
-            { data: 'isbn', "width": "15%" },
-            { data: 'listPrice', "width": "10%" },
-            { data: 'author', "width": "15%" },
+            { data: 'title', "width": "25%" },
+            { data: 'description', "width": "15%" },
+            { data: 'author', "width": "10%" },
             { data: 'category.name', "width": "15%" },
             {
                 data: 'productId',
@@ -46,6 +45,7 @@ function Delete(url) {
     }).then((result) => {
         if (result.isConfirmed) {
             swalWithBootstrapButtons.fire(
+                'File has been deleted',
                 $.ajax({
                     url: url,
                     type: 'DELETE',

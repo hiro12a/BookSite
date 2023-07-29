@@ -20,14 +20,12 @@ namespace Book.Models
         [Required]
         public string Description { get; set; }
         [Required]
-        public string ISBN { get; set; }
-        [Required]
         public string Author { get; set; }
-        [Required]
-        [Display(Name = "List Price")]
-        [Range(1,1000)]
 
         // Price
+        [Required]
+        [Display(Name = "List Price")]
+        [Range(1, 1000)]
         public double ListPrice { get; set; }
         [Required]
         [Display(Name = "Price for 1-50")]
@@ -44,12 +42,14 @@ namespace Book.Models
 
         // Navigational property to Category Model
         public int CategoryId { get; set; }
-        [ForeignKey(nameof(CategoryId))]
+        [ForeignKey("CategoryId")]
         [ValidateNever]
+        [Required]
         public Category Category { get; set; }
 
         // Image
         [ValidateNever]
+        [Required]
         public string ImageUrl { get; set; }
     }
 }
