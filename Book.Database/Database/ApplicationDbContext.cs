@@ -12,6 +12,7 @@ namespace BookSite.Database
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         // Add data to the database without having to manually input it
         protected override void OnModelCreating(ModelBuilder modelBuilder)

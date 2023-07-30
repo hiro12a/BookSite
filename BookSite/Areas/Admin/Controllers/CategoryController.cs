@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using BookSite.Database;
 using Book.Models;
 using Book.Database.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using Book.Utilities;
 
 namespace BookSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = StaticDetail.Role_Admin)] // Make sure only admins can access it
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

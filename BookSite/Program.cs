@@ -3,6 +3,8 @@ using Book.Database.Repository.IRepository;
 using BookSite.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Book.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +15,30 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnections")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+// User Management
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+// Paths for errors
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+
+
+// Add Razer Page
+builder.Services.AddRazorPages();
+
+
+// Email Sender
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 
 // Register for IRepository
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 var app = builder.Build();
 
@@ -32,6 +54,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Add razer pages
+app.MapRazorPages();
 
 app.UseAuthorization();
 

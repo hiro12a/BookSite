@@ -1,13 +1,16 @@
 ﻿using Book.Database.Repository.IRepository;
 using Book.Models;
 using Book.Models.ViewModels;
+using Book.Utilities;
 using BookSite.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = StaticDetail.Role_Admin)] // Make sure only admins can access it
     public class ProductController : Controller
     {
         private IUnitOfWork _unitOfWork;
