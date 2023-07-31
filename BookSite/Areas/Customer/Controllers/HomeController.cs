@@ -1,7 +1,9 @@
 ﻿using Book.Database.Repository.IRepository;
 using Book.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookSite.Areas.Customer.Controllers
 {
@@ -23,12 +25,42 @@ namespace BookSite.Areas.Customer.Controllers
             return View(products);
         }
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            Product products = _unitOfWork.ProductRepository.Get(u=>u.ProductId == id, includeProperties: "Category");
-            return View(products);
+            ShoppingCart cart = new()
+            {
+                Product = _unitOfWork.ProductRepository.Get(u => u.ProductId == id, includeProperties: "Category"),
+                Count = 1,
+                ProductId = id
+            };
+            return View(cart);
         }
+        [HttpPost]
+        [Authorize] // Make sure user is logged in
+        public IActionResult Details(ShoppingCart cart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value; // Populate userId
+            cart.ApplicationUserId = userId;
 
+
+            // Check for existing item
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && u.ProductId == cart.ProductId);
+            if(cartFromDb != null)
+            {
+                // Shopping cart exist
+                cartFromDb.Count += cart.Count; // Ads onto cart
+                _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
+            }
+            else
+            {
+                // Add Cart
+                _unitOfWork.ShoppingCartRepository.Add(cart);
+            } 
+
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
 
         public IActionResult Privacy()
         {

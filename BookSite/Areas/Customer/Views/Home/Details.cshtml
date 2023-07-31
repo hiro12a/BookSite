@@ -1,12 +1,14 @@
-﻿@model Product
+﻿<!--Modifty from product to shoppingcart-->
+@model ShoppingCart
 
-<form class="post">
+<form method="post">
+    <input asp-for="ProductId" hidden />
     <div class="card shadow border border-0 mt-4">
         <div class="card-header bg-secondary bg-gradient text-light py-4">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h3 class="text-white text-uppercase">@Model.Title</h3>
-                    <p class="text-white-50 fw-semibold mb-0">by: @Model.Author</p>
+                    <h3 class="text-white text-uppercase">@Model.Product.Title</h3>
+                    <p class="text-white-50 fw-semibold mb-0">by: @Model.Product.Author</p>
                 </div>
             </div>
         </div>
@@ -22,17 +24,17 @@
                 <div class="row">
                     <!--Display image-->
                     <div class="col-6 col-lg-3 offset-lg-1 text-center mb-3">
-                        <img src="@Model.ImageUrl" width="100%" class="rounded" />
+                        <img src="@Model.Product.ImageUrl" width="100%" class="rounded" />
                     </div>
                     <!--Display Category Name-->
                     <div class="col-6 pb-4">
-                        <span class="badge bg-dark">@Model.Category.Name</span>
+                        <span class="badge bg-dark">@Model.Product.Category.Name</span>
                         <!--Display Price-->
                         <div class="row ps-2 pt-2">
                             <h6 class="text-opacity-50 pb-2">
                                 List Price:
                                 <span class="text-decoration-line-through">
-                                    @Model.ListPrice.ToString("c")
+                                    @Model.Product.ListPrice.ToString("c")
                                 </span>
                             </h6>
                         </div>
@@ -55,17 +57,31 @@
                                 <div>Price</div>
                             </div>
                             <div class="p-1 col-3 col-lg-2 text-warning fw-bold">
-                                <div>@Model.Price.ToString("c")</div>
+                                <div>@Model.Product.Price.ToString("c")</div>
                             </div>
                             <div class="p-1 col-3 col-lg-2 text-warning fw-bold">
-                                <div>@Model.Price50.ToString("c")</div>
+                                <div>@Model.Product.Price50.ToString("c")</div>
                             </div>
                             <div class="p-1 col-3 col-lg-2 text-warning fw-bold">
-                                <div>@Model.Price100.ToString("c")</div>
+                                <div>@Model.Product.Price100.ToString("c")</div>
                             </div>
                         </div>
                         <div class="row p-lg-2 my-3">
-                            <p class="th-sm">@Html.Raw(Model.Description)</p>
+                            <p class="th-sm">@Html.Raw(Model.Product.Description)</p>
+                        </div>
+
+                        <!--Add to Cart-->
+                        <div class="row p-lg-2 mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-primary text-white border-0 fm-semibold" id="inputGroup-sizing-default">Count</span>
+                                <input asp-for="Count" type="number" value="1" class="text-end bg-white text-dark" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 pb-1">
+                                <button type="submit" class="btn btn-primary bg-gradient w-100 py-2 text-uppercase fm-semibold">Add to Cart</button>
+                            </div>
                         </div>
                     </div>          
                 </div>
