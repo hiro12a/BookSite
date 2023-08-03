@@ -11,7 +11,6 @@ namespace Book.Models.ViewModels
     public class CartVM
     {
         public IEnumerable<ShoppingCart> ShoppingCartList { get; set; }
-
-        public double OrderTotal;
+        public OrderHeader OrderHeader { get; set; }
     }
 }

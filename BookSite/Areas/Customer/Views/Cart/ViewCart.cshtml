@@ -21,7 +21,7 @@
                 <div class="col-md-10 offset-md-1">
                     @foreach(var obj in Model.ShoppingCartList)
                     {
-                    <div class="row border-bottom pb-3">
+                    <div class="row border-bottom pb-4 pt-2">
                         <div class="col-3 d-lg-block col-lg-1 text-center py-2">
                             <img src="@obj.Product.ImageUrl" class="rounded" width="100%" />
                         </div>
@@ -60,14 +60,14 @@
                         <div class="list-group mb-4">
                             <li class="d-flex justify-content-between align-items-center">
                                 <h5 class="fw-semibold text-uppercase">Total:</h5>
-                                <h4 class="fw-bolder">@Model.OrderTotal.ToString("c")</h4>
+                                <h4 class="fw-bolder">@Model.OrderHeader.OrderTotal.ToString("c")</h4>
                             </li>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2 offset-md-5">
-                        <a href="#" class="btn btn-primary border-0 bg-gradient py-2">Check Out</a>
+                        <a asp-action="Summary" class="btn btn-primary border-0 bg-gradient py-2">Check Out</a>
                     </div>
                 </div>
             </div>

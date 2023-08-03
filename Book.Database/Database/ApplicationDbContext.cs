@@ -15,6 +15,8 @@ namespace BookSite.Database
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Company> Companys { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
 
         // Add data to the database without having to manually input it
         protected override void OnModelCreating(ModelBuilder modelBuilder)

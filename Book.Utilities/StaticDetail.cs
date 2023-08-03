@@ -12,5 +12,19 @@ namespace Book.Utilities
         public const string Role_Company = "Company"; // Gives companies more days to make paymen
         public const string Role_Admin = "Admin";
         public const string Role_Employee = "Employee";
+
+        // Order Status
+        public const string StatusPending = "Pending";
+        public const string StatusApproved = "Approved";
+        public const string StatusInProcess = "Processing";
+        public const string StatusShipped = "Shipped";
+        public const string StatusCanceled = "Canceled";
+        public const string StatusRefunded = "Refunded";
+
+        // Payment Status
+        public const string PaymentStatusPending = "Pending";
+        public const string PaymentStatusApproved = "Approved";
+        public const string PaymentStatusDelayedPayment = "ApprovedForDelayedPayment";
+        public const string PaymentStatusRejected = "Rejected";
     }
 }
