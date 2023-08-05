@@ -129,7 +129,7 @@ namespace BookSite.Areas.Customer.Controllers
                 var domain = "https://localhost:44396/";
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    SuccessUrl = domain+ $"/Customer/Cart/OrderConfirmation?id={cartVM.OrderHeader.Id}",
+                    SuccessUrl = domain+ $"Customer/Cart/OrderConfirmation/{cartVM.OrderHeader.Id}",
                     CancelUrl = domain+"Customer/Cart/ViewCart",
                     LineItems = new List<SessionLineItemOptions>(),
                     Mode = "payment",
@@ -165,11 +165,31 @@ namespace BookSite.Areas.Customer.Controllers
             return RedirectToAction(nameof(OrderConfirmation), new { id = cartVM.OrderHeader.Id });
         }
 
+        // Confirm stripe payment
         public IActionResult OrderConfirmation(int id)
         {
+            // Update Payment Status
+            OrderHeader orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+            if(orderHeader.PaymentStatus != StaticDetail.PaymentStatusDelayedPayment)
+            {
+                var service = new Stripe.Checkout.SessionService();
+                Stripe.Checkout.Session session = service.Get(orderHeader.Sessionid);
+
+                if(session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitOfWork.OrderHeaderRepository.UpdateStripePaymentID(id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.OrderHeaderRepository.UpdateStatus(id, StaticDetail.StatusApproved, StaticDetail.StatusApproved);
+                    _unitOfWork.Save();
+                }
+
+                // Remove items from shopping cart and make it empty
+                List<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+                _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
+                _unitOfWork.Save();
+            }
+
             return View(id);
         }
-
 
         public IActionResult Plus(int cartId)
         {

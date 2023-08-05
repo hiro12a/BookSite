@@ -29,7 +29,7 @@ namespace Book.Database.Repository
             _db.OrderHeaders.Update(obj);
         }
 
-        public void UpdateStatue(int id, string orderStatus, string? paymentStatus = null)
+        public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
         {
             var orderFromDb = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
             if(orderFromDb != null)

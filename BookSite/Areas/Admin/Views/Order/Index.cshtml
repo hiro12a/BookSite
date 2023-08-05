@@ -2,11 +2,8 @@
     <div class="row pt-4 pb-3">
         <div class="col-6">
             <h2 class="text-primary">
-                Product List
+                Order List
             </h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create</a>
         </div>
     </div>
 </div>
@@ -14,16 +11,25 @@
     <thead>
         <tr>
             <th>
-                Title
+                Id
             </th>
             <th>
-                Description
+                First Name
             </th>
             <th>
-                Author
+                Last Name
             </th>
             <th>
-                Category
+                Phone Number
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Total
             </th>
             <th></th>
         </tr>
@@ -31,5 +37,5 @@
 </table>
 
 @section Scripts{
-    <script src="~/js/product.js"></script>
+    <script src="~/js/order.js"></script>
 }

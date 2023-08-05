@@ -27,6 +27,9 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
+                        </li>
                         <!--Check user role-->
                         @if (User.IsInRole(StaticDetail.Role_Admin))
                         {
