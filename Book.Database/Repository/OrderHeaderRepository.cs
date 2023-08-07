@@ -47,7 +47,7 @@ namespace Book.Database.Repository
             var orderFromDb = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
             if (!string.IsNullOrEmpty(sessionId))
             {
-                orderFromDb.Sessionid = sessionId;
+                orderFromDb.SessionId = sessionId;
             }
             if (!string.IsNullOrEmpty(paymentIntentId))
             {

@@ -1,5 +1,6 @@
 ﻿using Book.Database.Repository.IRepository;
 using Book.Models;
+using Book.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,16 @@ namespace BookSite.Areas.Admin.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        public IActionResult Details(int? orderId)
+        {
+            OrderVM orderVM = new()
+            {
+                OrderHeader = _unitOfWork.OrderHeaderRepository.Get(u=>u.Id == orderId, includeProperties: "ApplicationUser"),
+                OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u=>u.OrderHeaderId == orderId, includeProperties: "Product")
+            };
+
+            return View(orderVM);
         }
 
         #region API Calls

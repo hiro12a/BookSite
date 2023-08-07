@@ -173,7 +173,7 @@ namespace BookSite.Areas.Customer.Controllers
             if(orderHeader.PaymentStatus != StaticDetail.PaymentStatusDelayedPayment)
             {
                 var service = new Stripe.Checkout.SessionService();
-                Stripe.Checkout.Session session = service.Get(orderHeader.Sessionid);
+                Stripe.Checkout.Session session = service.Get(orderHeader.SessionId);
 
                 if(session.PaymentStatus.ToLower() == "paid")
                 {
