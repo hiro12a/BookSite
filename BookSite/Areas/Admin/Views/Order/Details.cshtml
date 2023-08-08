@@ -1,6 +1,7 @@
 ﻿@model OrderVM
 
 <form method ="post">
+    <input asp-for="OrderHeader.Id" hidden />
     <div class="container">
         <div class="card-header shadow bg-primary py-2">
             <div class="container row py-2">
@@ -156,7 +157,7 @@
                             <div class="col-9">
                                 @if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
                                 {
-                                    <input asp-for="OrderHeader.Carrier" type="text" class="form-control" />
+                                    <input asp-for="OrderHeader.Carrier" id="carrier" type="text" class="form-control" />
                                 }
                                 else
                                 {
@@ -171,7 +172,7 @@
                             <div class="col-9">
                                 @if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
                                 {
-                                    <input asp-for="OrderHeader.TrackingNumber" type="text" class="form-control" />
+                                    <input asp-for="OrderHeader.TrackingNumber" id="trackingNumber" type="text" class="form-control" />
                                 }
                                 else
                                 {
@@ -213,7 +214,7 @@
                                     <label>Payment Due Date</label>
                                 </div>
                                 <div class="col-9">
-                                        <input asp-for="OrderHeader.PaymentDueDate" readonly type="text" class="form-control" />
+                                    <input asp-for="OrderHeader.PaymentDueDate" readonly type="text" class="form-control" />
                                 </div>
                             </div>
                         }
@@ -224,10 +225,11 @@
                                     <label>Payment Date</label>
                                 </div>
                                 <div class="col-9">
-                                         <input value="@Model.OrderHeader.PaymentDate.ToShortDateString()" readonly type="text" class="form-control" />
+                                    <input asp-for="OrderHeader.PaymentDate" readonly type="text" class="form-control" />
                                 </div>
                             </div>
                         }
+                        
                         <div class="row my-1 pb-2">
                             <div class="col-3">
                                 <label>Payment Status</label>
@@ -236,18 +238,99 @@
                                     <input asp-for="OrderHeader.PaymentStatus" readonly type="text" class="form-control" />
                             </div>
                         </div>
-                        <button class="btn btn-warning col-12">Update Details</button>
+                        <!--Update-->
+                        @if(User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
+                        {
+                            <button type="submit" asp-action="UpdateOrder" class="btn btn-warning col-12">Update Details</button>
+                        }
                     </div>
                     <div class="col-12 col-lg-5 offset-lg-1">
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span>Order Summary</span>
                         </h4>
-                        <div class="text-center border py-2">
-                            <bold class="text-warning">Order Status:</bold>
+                        <div class="text-center border py-2 bg-dark">
+                            <bold class="text-warning">Order Status: @Model.OrderHeader.OrderStatus</bold>
                         </div>
+                        <ul class="list-group mb-3 pt-2">
+                            @foreach(var prod in Model.OrderDetails)
+                            {
+                                <li class="list-group-item d-flex justify-content-between border">
+                                    <div class="row container">
+                                        <div class="col-8">
+                                            <h6 class="my-0 text-primary">@prod.Product.Title</h6>
+                                            <small>Price: @prod.Price.ToString("c")</small>
+                                            <small>Quantity : @prod.Count</small>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <p class="text-success">@(prod.Count * prod.Price)</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            <li class="list-group-item bg-primary">
+                                <div class="row container">
+                                    <div class="col-6">
+                                        <h5 class="text-white">TOTAL</h5>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <h5 class="text-white">@Model.OrderHeader.OrderTotal.ToString("c")</h5>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!--If payment status is delayed and order is shipped-->
+                        @if(Model.OrderHeader.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment && 
+                        Model.OrderHeader.OrderStatus == StaticDetail.StatusShipped){
+                            <button type="submit" class="btn btn-success form-control my-1">Pay Now</button>
+                        }
+                        <!--Make sure only employee or admin can see and use-->
+                        @if(User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
+                        {
+                            if(Model.OrderHeader.OrderStatus == StaticDetail.StatusApproved)
+                            {
+                                <button type="submit" asp-action="StartProcessing" class="btn btn-primary form-control my-1">Start Processing</button>
+                            }
+                            if (Model.OrderHeader.OrderStatus == StaticDetail.StatusInProcess)
+                            {
+                                <button type="submit" onClick="return validateInput()" asp-action="ShipOrder" class="btn btn-primary form-control my-1">Ship Order</button>
+                            }
+                            if (Model.OrderHeader.OrderStatus != StaticDetail.StatusRefunded &&
+                            Model.OrderHeader.OrderStatus != StaticDetail.StatusCanceled &&
+                            Model.OrderHeader.OrderStatus != StaticDetail.StatusShipped)
+                            {
+                                <button type="submit" asp-action="CancelOrder" class="btn btn-danger form-control my-1">Cancel Order</button>
+                            }
+                           
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function validateInput(){
+            if(document.getElementById("trackingNumber").value == ""){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter tracking number',
+                });
+                return false;
+            }
+            if (document.getElementById("carrier").value == "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter carrier',
+                });
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    </script>
+}
