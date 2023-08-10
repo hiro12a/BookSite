@@ -43,6 +43,15 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 // Register for IRepository
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Configure Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
 
 var app = builder.Build();
 
@@ -64,6 +73,9 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 
 // Add razer pages
 app.MapRazorPages();
+
+// Add session
+app.UseSession();
 
 app.UseAuthorization();
 

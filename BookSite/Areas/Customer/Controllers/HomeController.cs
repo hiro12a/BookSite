@@ -1,5 +1,6 @@
 ﻿using Book.Database.Repository.IRepository;
 using Book.Models;
+using Book.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -21,6 +22,14 @@ namespace BookSite.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Populate userId
+            if(userId != null)
+            {
+                HttpContext.Session.SetInt32(StaticDetail.SessionCart,
+                   _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId.Value).Count());
+            }
+
             IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category");
             return View(products);
         }
@@ -51,14 +60,19 @@ namespace BookSite.Areas.Customer.Controllers
                 // Shopping cart exist
                 cartFromDb.Count += cart.Count; // Ads onto cart
                 _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 // Add Cart
                 _unitOfWork.ShoppingCartRepository.Add(cart);
-            } 
+                _unitOfWork.Save();
 
-            _unitOfWork.Save();
+                // Set session to display a number for the cart icon
+                HttpContext.Session.SetInt32(StaticDetail.SessionCart,
+                    _unitOfWork.ShoppingCartRepository.GetAll(u=>u.ApplicationUserId == userId).Count());
+                
+            }     
             return RedirectToAction(nameof(Index));
         }
 

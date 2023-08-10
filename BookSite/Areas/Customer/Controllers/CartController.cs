@@ -201,10 +201,13 @@ namespace BookSite.Areas.Customer.Controllers
         }
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId, tracked: true);
             if(cartFromDb.Count <= 1) 
             {
                 // Remove from cart
+                // Remove the number from after cart icon
+                HttpContext.Session.SetInt32(StaticDetail.SessionCart,
+                          _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
                 _unitOfWork.ShoppingCartRepository.Remove(cartFromDb);
             }
             else
@@ -217,8 +220,13 @@ namespace BookSite.Areas.Customer.Controllers
         }
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId, tracked: true);
+
+            // Remove the number from after cart icon
             _unitOfWork.ShoppingCartRepository.Remove(cartFromDb);
+            HttpContext.Session.SetInt32(StaticDetail.SessionCart,
+                _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+
             _unitOfWork.Save();
             return RedirectToAction(nameof(ViewCart));
         }

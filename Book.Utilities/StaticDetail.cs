@@ -8,6 +8,7 @@ namespace Book.Utilities
 {
     public class StaticDetail
     {
+        // Company
         public const string Role_Customer = "Customer";
         public const string Role_Company = "Company"; // Gives companies more days to make paymen
         public const string Role_Admin = "Admin";
@@ -26,5 +27,8 @@ namespace Book.Utilities
         public const string PaymentStatusApproved = "Approved";
         public const string PaymentStatusDelayedPayment = "ApprovedForDelayedPayment";
         public const string PaymentStatusRejected = "Rejected";
+
+        // Session
+        public const string SessionCart = "SessionShoppingCart";
     }
 }
