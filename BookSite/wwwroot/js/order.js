@@ -9,8 +9,7 @@ function loadDataTable() {
         "ajax": { url: '/Admin/Order/Getall'},
         "columns": [
             { data: 'id', "width": "25%" },
-            { data: 'firstName', "width": "15%" },
-            { data: 'lastName', "width": "15%" },
+            { data: 'name', "width": "15%" },
             { data: 'phoneNumber', "width": "10%" },
             { data: 'applicationUser.email', "width": "15%" },
             { data: 'orderStatus', "width": "10%" },

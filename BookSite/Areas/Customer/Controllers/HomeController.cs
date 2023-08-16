@@ -22,14 +22,6 @@ namespace BookSite.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Populate userId
-            if(userId != null)
-            {
-                HttpContext.Session.SetInt32(StaticDetail.SessionCart,
-                   _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId.Value).Count());
-            }
-
             IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category");
             return View(products);
         }

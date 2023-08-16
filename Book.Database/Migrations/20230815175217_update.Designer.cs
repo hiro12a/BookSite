@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Book.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230801171720_addHeaderandDetails")]
-    partial class addHeaderandDetails
+    [Migration("20230815175217_update")]
+    partial class update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,6 +182,9 @@ namespace Book.Database.Migrations
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ShippingDate")
@@ -562,11 +565,7 @@ namespace Book.Database.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -586,7 +585,7 @@ namespace Book.Database.Migrations
 
             modelBuilder.Entity("Book.Models.OrderDetails", b =>
                 {
-                    b.HasOne("Book.Models.OrderHeader", "orderHeader")
+                    b.HasOne("Book.Models.OrderHeader", "OrderHeader")
                         .WithMany()
                         .HasForeignKey("OrderHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -598,20 +597,20 @@ namespace Book.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("OrderHeader");
 
-                    b.Navigation("orderHeader");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Book.Models.OrderHeader", b =>
                 {
-                    b.HasOne("Book.Models.ApplicationUser", "User")
+                    b.HasOne("Book.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Book.Models.Product", b =>

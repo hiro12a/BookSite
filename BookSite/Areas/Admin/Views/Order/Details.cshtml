@@ -29,28 +29,11 @@
                             <div class="col-9">
                                 <!--Only allow admins or employees to edit-->
                                 @if(User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee)){
-                                    <input asp-for="OrderHeader.FirstName" type="text" class="form-control"/>
-                                    <span asp-validation-for="OrderHeader.FirstName" class="text-danger"></span>
+                                    <input asp-for="OrderHeader.Name" type="text" class="form-control"/>
+                                    <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
                                 }
                                 else{
-                                    <input asp-for="OrderHeader.FirstName" readonly type="text" class="form-control"/>
-                                }
-                            </div>
-                        </div>
-                        <div class="row my-1">
-                            <div class="col-3">
-                                <label>Last Name</label>
-                            </div>
-                            <div class="col-9">
-                                <!--Only allow admins or employees to edit-->
-                                @if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
-                                {
-                                    <input asp-for="OrderHeader.LastName" type="text" class="form-control" />
-                                    <span asp-validation-for="OrderHeader.LastName" class="text-danger"></span>
-                                }
-                                else
-                                {
-                                    <input asp-for="OrderHeader.LastName" readonly type="text" class="form-control" />
+                                    <input asp-for="OrderHeader.Name" readonly type="text" class="form-control"/>
                                 }
                             </div>
                         </div>

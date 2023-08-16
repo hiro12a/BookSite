@@ -26,17 +26,8 @@
                                 <label>First Name</label>
                             </div>
                             <div class="col-9">
-                                <input asp-for="@Model.OrderHeader.FirstName" class="form-control" />
-                                <span asp-validation-for="OrderHeader.FirstName" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="row my-1">
-                            <div class="col-3">
-                                <label>Last Name</label>
-                            </div>
-                            <div class="col-9">
-                                <input asp-for="@Model.OrderHeader.LastName" class="form-control" />
-                                <span asp-validation-for="OrderHeader.LastName" class="text-danger"></span>
+                                <input asp-for="@Model.OrderHeader.Name" class="form-control" />
+                                <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row my-1">
@@ -61,7 +52,7 @@
                                 <label>Street Address</label>
                             </div>
                             <div class="col-9">
-                                <input asp-for="OrderHeader.StreetAddress" class="form-control" />
+                                <input asp-for="@Model.OrderHeader.StreetAddress" class="form-control" />
                                 <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
                             </div>
                         </div>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Book.Utilities;
 using Stripe;
+using Book.Database.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +20,22 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 // Configure for Stripe
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
+
+// Initializer
+builder.Services.AddScoped<IDBInitializer, DbInitializer>();
+
+
 // User Management
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
 options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
+
+// Facebook authentication
+builder.Services.AddAuthentication().AddFacebook(option => {
+    option.AppId = "307537055152787";
+    option.AppSecret = "53a69af386ba4f65b6967602a4ade5cb";
+
+});
 // Paths for errors
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -42,6 +55,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // Register for IRepository
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 // Configure Session
 builder.Services.AddDistributedMemoryCache();
@@ -74,8 +88,11 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 // Add razer pages
 app.MapRazorPages();
 
+SeedDatabase();
+
 // Add session
 app.UseSession();
+
 
 app.UseAuthorization();
 
@@ -84,3 +101,12 @@ app.MapControllerRoute(
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}"); // Changed after adding areas
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+        dbInitializer.Initializer();
+    }
+}

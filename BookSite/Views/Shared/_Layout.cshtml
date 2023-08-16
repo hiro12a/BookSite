@@ -33,6 +33,9 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Create User</a>
+                        </li>
                         <!--Check user role-->
                         @if (User.IsInRole(StaticDetail.Role_Admin))
                         {
@@ -46,30 +49,19 @@
                                         <ul class="m-0 p-0" style="list-style:none;">
                                             <li><a asp-area="Admin" asp-controller="Category" asp-action="CategoryView" class="dropdown-item">Category</a></li>
                                             <li><a asp-area="Admin" asp-controller="Product" asp-action="ViewProduct" class="dropdown-item">Product</a></li>
-                                            <li><a asp-area="Admin" asp-controller="Company" asp-action="ViewCompany" class="dropdown-item">Company</a></li>
+                                            <li><a asp-area="Admin" asp-controller="Company" asp-action="ViewCompany" class="dropdown-item">Company</a></li>                                           
                                         </ul>
                                     </div>
                                 </div>
                             </li>
                         }
-                        @if(httpContextAccessor.HttpContext.Session.GetInt32(StaticDetail.SessionCart) != null)
-                        {
+                        
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="ViewCart">
-                                    <i class="bi bi-cart"></i> &nbsp;
-                                    (@httpContextAccessor.HttpContext.Session.GetInt32(StaticDetail.SessionCart))
+                                    @await Component.InvokeAsync("ShoppingCart")
                                 </a>
                             </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="ViewCart">
-                                    <i class="bi bi-cart"></i> &nbsp;
-                                    (0)
-                                </a>
-                            </li>
-                        }
+                        
 
                     </ul>
                     <partial name="_LoginPartial" />

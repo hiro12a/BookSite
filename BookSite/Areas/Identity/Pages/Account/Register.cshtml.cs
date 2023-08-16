@@ -116,8 +116,7 @@ namespace BookSite.Areas.Identity.Pages.Account
             public IEnumerable<SelectListItem> RoleList { get; set; }
 
             [Required]
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
+            public string Name { get; set; }
             public string? StreetAddress { get; set; }
             public string? City { get; set; }
             public string? State { get; set; }
@@ -179,8 +178,7 @@ namespace BookSite.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 user.StreetAddress = Input.StreetAddress;
                 user.City = Input.City;
-                user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
+                user.Name = Input.Name;
                 user.PostalCode = Input.PostalCode;
                 user.State = Input.State;
                 user.PhoneNumber = Input.PhoneNumber;

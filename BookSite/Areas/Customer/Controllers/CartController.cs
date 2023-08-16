@@ -55,8 +55,8 @@ namespace BookSite.Areas.Customer.Controllers
 
             _cartVm.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
-            _cartVm.OrderHeader.FirstName = _cartVm.OrderHeader.ApplicationUser.FirstName;
-            _cartVm.OrderHeader.LastName = _cartVm.OrderHeader.ApplicationUser.LastName;
+            _cartVm.OrderHeader.Name = _cartVm.OrderHeader.ApplicationUser.Name;
+         
             _cartVm.OrderHeader.PhoneNumber = _cartVm.OrderHeader.ApplicationUser.PhoneNumber;
             _cartVm.OrderHeader.City = _cartVm.OrderHeader.ApplicationUser.City;
             _cartVm.OrderHeader.State = _cartVm.OrderHeader.ApplicationUser.State;
@@ -187,6 +187,8 @@ namespace BookSite.Areas.Customer.Controllers
                 _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
                 _unitOfWork.Save();
             }
+
+            HttpContext.Session.Clear();
 
             return View(id);
         }

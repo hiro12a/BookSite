@@ -112,8 +112,7 @@ namespace BookSite.Areas.Admin.Controllers
             var orderHeaderFromDb = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == OrderVM.OrderHeader.Id);
 
             // Manually mapping the field
-            orderHeaderFromDb.FirstName = OrderVM.OrderHeader.FirstName;
-            orderHeaderFromDb.LastName = OrderVM.OrderHeader.LastName;
+            orderHeaderFromDb.Name = OrderVM.OrderHeader.Name;
             orderHeaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
             orderHeaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
             orderHeaderFromDb.City = OrderVM.OrderHeader.City;
