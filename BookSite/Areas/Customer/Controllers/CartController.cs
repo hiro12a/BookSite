@@ -58,6 +58,7 @@ namespace BookSite.Areas.Customer.Controllers
             _cartVm.OrderHeader.Name = _cartVm.OrderHeader.ApplicationUser.Name;
          
             _cartVm.OrderHeader.PhoneNumber = _cartVm.OrderHeader.ApplicationUser.PhoneNumber;
+            _cartVm.OrderHeader.StreetAddress = _cartVm.OrderHeader.ApplicationUser.StreetAddress;
             _cartVm.OrderHeader.City = _cartVm.OrderHeader.ApplicationUser.City;
             _cartVm.OrderHeader.State = _cartVm.OrderHeader.ApplicationUser.State;
             _cartVm.OrderHeader.PostalCode = _cartVm.OrderHeader.ApplicationUser.PostalCode;
@@ -126,7 +127,7 @@ namespace BookSite.Areas.Customer.Controllers
             {
                 // Regular account and need to capture payment
                 // Stripe logic
-                var domain = Request.Scheme + "://" + Request.Host.Value + "/"
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
                     SuccessUrl = domain+ $"Customer/Cart/OrderConfirmation/{cartVM.OrderHeader.Id}",
