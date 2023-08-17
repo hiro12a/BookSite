@@ -126,7 +126,7 @@ namespace BookSite.Areas.Customer.Controllers
             {
                 // Regular account and need to capture payment
                 // Stripe logic
-                var domain = "https://localhost:44396/";
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/"
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
                     SuccessUrl = domain+ $"Customer/Cart/OrderConfirmation/{cartVM.OrderHeader.Id}",

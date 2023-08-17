@@ -46,7 +46,7 @@ namespace BookSite.Areas.Admin.Controllers
             OrderVM.OrderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
             OrderVM.OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
            
-            var domain = "https://localhost:44396/";
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/"; // Get domain dynamically
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 SuccessUrl = domain + $"Admin/Order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}",
