@@ -33,12 +33,12 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Create User</a>
-                        </li>
                         <!--Check user role-->
-                        @if (User.IsInRole(StaticDetail.Role_Admin))
+                        @if(User.IsInRole(StaticDetail.Role_Admin))
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Create User</a>
+                            </li>
                             <!--Dropdown-->
                             <li>
                                 <div class="nav-item dropdown">
