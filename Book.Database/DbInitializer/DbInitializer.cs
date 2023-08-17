@@ -58,8 +58,7 @@ namespace Book.Database.DbInitializer
                     State = "NC",
                     PostalCode = "28253",
                     City = "Charlotte"
-                },
-                "Jingking@12").GetAwaiter().GetResult();
+                }, password: "Jingking@12").GetAwaiter().GetResult();
 
                 ApplicationUser user = dbContext.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@booksite.com");
                 userManager.AddToRoleAsync(user, StaticDetail.Role_Admin).GetAwaiter().GetResult();
