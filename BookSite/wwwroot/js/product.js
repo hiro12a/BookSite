@@ -10,7 +10,7 @@ function loadDataTable() {
         "columns": [
             { data: 'title', "width": "25%" },
             { data: 'description', "width": "15%" },
-            { data: 'author', "width": "10%" },
+            { data: 'author', "width": "15%" },
             { data: 'category.name', "width": "15%" },
             {
                 data: 'productId',
@@ -20,7 +20,7 @@ function loadDataTable() {
                     <a onClick=Delete("/admin/product/delete/${data}") class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i >Delete</a>
                     </div>`
                 },
-                "width" : "25%"
+                "width": "25%"
             }
         ]
     });
