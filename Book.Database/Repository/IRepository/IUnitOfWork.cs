@@ -15,6 +15,7 @@ namespace Book.Database.Repository.IRepository
         IApplicationUserRepository ApplicationUserRepository { get; }
         IOrderDetailsRepository OrderDetailsRepository { get; }
         IOrderHeaderRepository OrderHeaderRepository { get; }
+        IImageManagerRepository ImageManagerRepository { get; }
 
         void Save();
     }

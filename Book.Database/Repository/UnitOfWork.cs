@@ -19,6 +19,7 @@ namespace Book.Database.Repository
         public IApplicationUserRepository ApplicationUserRepository { get; private set; }
         public IOrderHeaderRepository OrderHeaderRepository { get; private set; }
         public IOrderDetailsRepository OrderDetailsRepository { get; private set; }
+        public IImageManagerRepository ImageManagerRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -30,6 +31,7 @@ namespace Book.Database.Repository
             ApplicationUserRepository = new ApplicationUserRepository(_db);
             OrderHeaderRepository = new OrderHeaderRepository(_db);
             OrderDetailsRepository = new OrderDetailsRepository(_db);
+            ImageManagerRepository = new ImageManagerRepository(_db);
         }
         public void Save()
         {

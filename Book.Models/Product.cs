@@ -47,9 +47,8 @@ namespace Book.Models
         [Required]
         public Category Category { get; set; }
 
-        // Image
+        // Since it contains many image in one product, need to put list here
         [ValidateNever]
-        [Required]
-        public string ImageUrl { get; set; }
+        public List<ImageManager> ImageManagers { get; set; }
     }
 }

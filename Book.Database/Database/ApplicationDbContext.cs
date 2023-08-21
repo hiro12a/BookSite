@@ -17,6 +17,7 @@ namespace BookSite.Database
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<ImageManager> ImageManagers { get; set; }
 
         // Add data to the database without having to manually input it
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,7 +42,6 @@ namespace BookSite.Database
                     Price50 = 85,
                     Price100 = 80,
                     CategoryId = 1,
-                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -54,7 +54,6 @@ namespace BookSite.Database
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 2,
-                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -67,7 +66,7 @@ namespace BookSite.Database
                     Price50 = 45,
                     Price100 = 40,
                     CategoryId = 3,
-                    ImageUrl = ""
+            
                 },
                 new Product
                 {
@@ -80,7 +79,7 @@ namespace BookSite.Database
                     Price50 = 35,
                     Price100 = 30,
                     CategoryId = 1,
-                    ImageUrl = ""
+          
                 },
                 new Product
                 {
@@ -93,7 +92,7 @@ namespace BookSite.Database
                     Price50 = 60,
                     Price100 = 55,
                     CategoryId = 2,
-                    ImageUrl = ""
+             
                 }
                 );
         }

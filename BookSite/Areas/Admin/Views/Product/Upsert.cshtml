@@ -10,7 +10,6 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data"> <!--Form upload won't work without enctype-->
             <input asp-for="Product.ProductId" hidden/>
-            <input asp-for="Product.ImageUrl" hidden />
             <div class="row">
                 <div class="col-7">
                     <div class="form-floating col-12">
@@ -56,9 +55,9 @@
                         <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                     </div>
                     <div class="form-floating py-1 col-12">
-                        <input type="file" name="file" class="form-control border-0" />
-                        <label asp-for="Product.ImageUrl" class="ms-2 text-dark"></label>
-                        <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+                        <input type="file" name="files" class="form-control border-0" multiple/> <!--Allows user to select multiple image-->
+                        <label asp-for="Product.ImageManagers" class="ms-2 text-dark"></label>
+                        <span asp-validation-for="Product.ImageManagers" class="text-danger"></span>
                     </div>
                     </div>
                 <div class="col-5">
@@ -88,15 +87,14 @@
     <script>
         tinymce.init({
             selector: 'textarea',
-            plugins: 'ai tinycomments mentions anchor charmap codesample emoticons lists table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            plugins: 'anchor charmap codesample emoticons lists table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
-            mergetags_list: [
+            mergetags_list: [ 
                 { value: 'First.Name', title: 'First Name' },
                 { value: 'Email', title: 'Email' },
-            ],
-            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
+            ],          
         });
     </script>
     @{

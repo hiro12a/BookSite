@@ -22,9 +22,9 @@
                     @foreach(var obj in Model.ShoppingCartList)
                     {
                     <div class="row border-bottom pb-4 pt-2">
-                        <div class="col-3 d-lg-block col-lg-1 text-center py-2">
+                       @* <div class="col-3 d-lg-block col-lg-1 text-center py-2">
                             <img src="@obj.Product.ImageUrl" class="rounded" width="100%" />
-                        </div>
+                        </div>*@
                         <div class="col-9 col-lg-6 pt-md-3">
                             <h5 class="text-uppercase"><strong>@obj.Product.Title</strong></h5>
                             <p><small>@Html.Raw(obj.Product.Description)</small></p>
