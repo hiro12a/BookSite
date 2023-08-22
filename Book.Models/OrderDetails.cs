@@ -20,8 +20,8 @@ namespace Book.Models
         public OrderHeader OrderHeader { get; set; }
 
         [Required]
-        public int ProductId { get; set; }
-        [ForeignKey(nameof(ProductId))]
+        public int ProdId { get; set; }
+        [ForeignKey(nameof(ProdId))]
         [ValidateNever]
         public Product Product { get; set; }
 

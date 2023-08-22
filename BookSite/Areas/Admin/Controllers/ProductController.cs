@@ -98,7 +98,7 @@ namespace BookSite.Areas.Admin.Controllers
                         ImageManager imageManager = new()
                         {
                             ImageUrl = @"\" + productpath + @"\" + filename,
-                            ProductId = prod.Product.ProductId,
+                            ProdId = prod.Product.ProductId,
                         };
 
                         // Populate image in a list
@@ -144,18 +144,56 @@ namespace BookSite.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "Erorr while Deleting" });
             }
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string productpath = @"Image\Products\Product-" + id;
+            string finalPath = Path.Combine(wwwRootPath, productpath); // Get path
 
-            /*var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, prodToDelete.ImageManagers.TrimStart('\\'));
-            if (System.IO.File.Exists(oldImagePath))
+            // Create folder if it exist
+            if (Directory.Exists(finalPath))
             {
-                System.IO.File.Delete(oldImagePath);
-            }*/
+                string[] filePaths = Directory.GetFiles(finalPath);
+                // Get the individual files and delete it
+                foreach (string item in filePaths)
+                {
+                    System.IO.File.Delete(item);
+                }
+
+                Directory.CreateDirectory(finalPath);
+            }
 
             _unitOfWork.ProductRepository.Remove(prodToDelete);
             _unitOfWork.Save();
 
             List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
             return Json(new { data = products });
+        }
+
+        public IActionResult DeleteImage(int imageId)
+        {
+            // Retrieve imageId from image manager 
+            var imageToDelete = _unitOfWork.ImageManagerRepository.Get(u => u.Id == imageId);
+            int productId = imageToDelete.ProdId;
+
+            // Check if there is image
+            if(imageToDelete != null)
+            {
+                // Check if there is image
+                if(!string.IsNullOrEmpty(imageToDelete.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToDelete.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Delete image
+                _unitOfWork.ImageManagerRepository.Remove(imageToDelete);
+                _unitOfWork.Save();
+            }
+
+            TempData["success"] = "Deleted Successfully";
+            return RedirectToAction(nameof(Upsert), new { id = productId });
         }
         #endregion
 

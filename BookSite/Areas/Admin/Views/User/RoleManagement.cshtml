@@ -17,7 +17,38 @@
                     <span asp-validation-for="ApplicationUser.Name" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.Email" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.Email" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.PhoneNumber" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.PhoneNumber" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.StreetAddress" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.StreetAddress" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.StreetAddress" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.City" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.City" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.State" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.State" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.State" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="ApplicationUser.PostalCode" class="form-control border-0" />
+                    <label asp-for="ApplicationUser.PostalCode" class="ms-2 text-dark"></label>
+                    <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
                     <select asp-for="ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select"></select>
+                    <label asp-for="ApplicationUser.Role" class="ms-2 text-dark"></label>    
                 </div>
                 @{
                     var companyVisible = "display:none;";

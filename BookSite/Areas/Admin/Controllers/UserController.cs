@@ -16,15 +16,13 @@ namespace BookSite.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private IUnitOfWork _unitOfWork;
-        private ApplicationDbContext _db;
-        private IWebHostEnvironment _webHostEnvironment; // For Image Upload
         private UserManager<IdentityUser> _userManager { get; set; }
-        public UserController(IUnitOfWork unitOfWork, IWebHostEnvironment webHost, ApplicationDbContext db, UserManager<IdentityUser> userManger) 
+        private RoleManager<IdentityRole> _roleManager { get; set; }
+        public UserController(IUnitOfWork unitOfWork,RoleManager<IdentityRole> roleManger, UserManager<IdentityUser> userManger) 
         { 
             _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHost;
-            _db = db;
             _userManager = userManger;
+            _roleManager = roleManger;
         }
 
         public IActionResult Index()
@@ -33,19 +31,16 @@ namespace BookSite.Areas.Admin.Controllers
         }
         public IActionResult RoleManagement(string userId)
         {
-            // Get roleID
-            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
-
             // Populate RoleManagementVM
-            RoleManagementVM roleVM = new RoleManagementVM()
+            RoleManagementVM RoleVM = new RoleManagementVM()
             {
-                ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
-                RoleList = _db.Roles.Select(i => new SelectListItem
+                ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId, includeProperties:"Company"),
+                RoleList = _roleManager.Roles.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Name
                 }),
-                CompanyList = _db.Companys.Select(i => new SelectListItem
+                CompanyList = _unitOfWork.CompanyRepository.GetAll().Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.CompanyId.ToString()
@@ -53,26 +48,26 @@ namespace BookSite.Areas.Admin.Controllers
 
             };
 
-            // Populate user role
-            roleVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+            // Automatically retrieve and populate user role 
+            RoleVM.ApplicationUser.Role = _userManager.GetRolesAsync(_unitOfWork.ApplicationUserRepository.Get(u=>u.Id == userId)).
+                GetAwaiter().GetResult().FirstOrDefault();
 
-            return View(roleVM);
+            return View(RoleVM);
         }
+
         [HttpPost]
         public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
         {
-            // Get role Id
-            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
-            
             // Retrieve old role
-            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+            string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUserRepository.Get(u => u.Id == roleManagementVM.ApplicationUser.Id)).
+                GetAwaiter().GetResult().FirstOrDefault();
+
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == roleManagementVM.ApplicationUser.Id);
 
             // Check if the role is changed
-            if(roleManagementVM.ApplicationUser.Role != oldRole)
+            if (roleManagementVM.ApplicationUser.Role != oldRole)
             {
-                // A role has been updated
-                ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
-                
+
                 // Check if the user is from a company, if so then assign one of the companies to the user
                 if(roleManagementVM.ApplicationUser.Role == StaticDetail.Role_Company)
                 {
@@ -86,15 +81,33 @@ namespace BookSite.Areas.Admin.Controllers
                 }
 
                 // Save Changes
-                _db.SaveChanges();
+                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
+                _unitOfWork.Save();
 
                 // Remove Old role
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
 
                 // Add new role
-                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
-            
-                
+                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();                         
+            }
+            // Check if only company is updated 
+            else if (oldRole==StaticDetail.Role_Company && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
+            {
+                applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
+                _unitOfWork.Save();
+            }
+            else
+            {
+                applicationUser.Name = roleManagementVM.ApplicationUser.Name;
+                applicationUser.Email = roleManagementVM.ApplicationUser.Email;
+                applicationUser.PhoneNumber = roleManagementVM.ApplicationUser.PhoneNumber;
+                applicationUser.StreetAddress = roleManagementVM.ApplicationUser.StreetAddress;
+                applicationUser.City = roleManagementVM.ApplicationUser.City;
+                applicationUser.State = roleManagementVM.ApplicationUser.State;
+                applicationUser.PostalCode = roleManagementVM.ApplicationUser.PostalCode;
+                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
+                _unitOfWork.Save();
             }
             return RedirectToAction("Index");
         }
@@ -104,16 +117,13 @@ namespace BookSite.Areas.Admin.Controllers
         public IActionResult GetAll()
         {
             // Mapping tables
-            List<ApplicationUser> users = _db.ApplicationUsers.Include(u=>u.Company).ToList();
+            List<ApplicationUser> users = _unitOfWork.ApplicationUserRepository.GetAll(includeProperties:"Company").ToList();
 
-            var userRoles = _db.UserRoles.ToList();
-            var roles = _db.Roles.ToList();
 
             foreach(var user in users)
             {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
-                user.Role = roles.FirstOrDefault(u=>u.Id == roleId).Name;
-
+                
+                user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
                 if(user.Company == null)
                 {
@@ -130,7 +140,7 @@ namespace BookSite.Areas.Admin.Controllers
         public IActionResult LockUnlock([FromBody]string id) // From body is from the database table
         {
             // Directly work with entity framework core
-            var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            var objFromDb = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == id);
             if(objFromDb == null)
             {
                 return Json(new { success = false, message = "Error While Locking/Unlocking" });
@@ -146,7 +156,8 @@ namespace BookSite.Areas.Admin.Controllers
                 objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
             }
 
-            _db.SaveChanges();
+            _unitOfWork.ApplicationUserRepository.Update(objFromDb);
+            _unitOfWork.Save();
             
 
             return Json(new { success = true, message = "Operation Sucecssful"});

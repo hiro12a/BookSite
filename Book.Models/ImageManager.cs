@@ -17,8 +17,8 @@ namespace Book.Models
 
 
         // One to many relation, single product has many image 
-        public int ProductId { get; set; }
-        [ForeignKey(nameof(ProductId))]
+        public int ProdId { get; set; }
+        [ForeignKey(nameof(ProdId))]
         public Product Product { get; set; }
     }
 }

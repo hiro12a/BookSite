@@ -33,9 +33,11 @@ namespace BookSite.Areas.Customer.Controllers
                 OrderHeader = new()
             };
 
-            foreach(var cart in _cartVm.ShoppingCartList)
+            IEnumerable<ImageManager> images = _unitOfWork.ImageManagerRepository.GetAll();
+            foreach (var cart in _cartVm.ShoppingCartList)
             {
-                cart.Price = GetPriceBasedOnQuantity(cart);
+                cart.Product.ImageManagers = images.Where(u => u.ProdId == cart.Product.ProductId).ToList();
+                cart.Price = GetPriceBasedOnQuantity(cart);     
                 _cartVm.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
 
@@ -56,15 +58,18 @@ namespace BookSite.Areas.Customer.Controllers
             _cartVm.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
             _cartVm.OrderHeader.Name = _cartVm.OrderHeader.ApplicationUser.Name;
-         
+          
             _cartVm.OrderHeader.PhoneNumber = _cartVm.OrderHeader.ApplicationUser.PhoneNumber;
             _cartVm.OrderHeader.StreetAddress = _cartVm.OrderHeader.ApplicationUser.StreetAddress;
             _cartVm.OrderHeader.City = _cartVm.OrderHeader.ApplicationUser.City;
             _cartVm.OrderHeader.State = _cartVm.OrderHeader.ApplicationUser.State;
             _cartVm.OrderHeader.PostalCode = _cartVm.OrderHeader.ApplicationUser.PostalCode;
 
+            IEnumerable<ImageManager> images = _unitOfWork.ImageManagerRepository.GetAll();
+
             foreach (var cart in _cartVm.ShoppingCartList)
             {
+                cart.Product.ImageManagers = images.Where(u => u.ProdId == cart.Product.ProductId).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 _cartVm.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
@@ -86,8 +91,10 @@ namespace BookSite.Areas.Customer.Controllers
 
             ApplicationUser appUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
+           
+
             foreach (var cart in cartVM.ShoppingCartList)
-            {
+            {        
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 cartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);        
             }
@@ -112,7 +119,7 @@ namespace BookSite.Areas.Customer.Controllers
             {
                 OrderDetails orderDetails = new()
                 {
-                    ProductId = cart.ProductId,
+                    ProdId = cart.ProdId,
                     OrderHeaderId = cartVM.OrderHeader.Id,
                     Price = cart.Price,
                     Count = cart.Count
@@ -182,21 +189,21 @@ namespace BookSite.Areas.Customer.Controllers
                     _unitOfWork.OrderHeaderRepository.UpdateStatus(id, StaticDetail.StatusApproved, StaticDetail.StatusApproved);
                     _unitOfWork.Save();
                 }
-
                 // Remove items from shopping cart and make it empty
-                List<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+                IEnumerable<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.
+                    GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
                 _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
                 _unitOfWork.Save();
-            }
 
-            HttpContext.Session.Clear();
+                HttpContext.Session.Clear();
+            }
 
             return View(id);
         }
 
         public IActionResult Plus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProdId == cartId);
             cartFromDb.Count += 1;
             _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
             _unitOfWork.Save();
@@ -204,7 +211,7 @@ namespace BookSite.Areas.Customer.Controllers
         }
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId, tracked: true);
+            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProdId == cartId, tracked: true);
             if(cartFromDb.Count <= 1) 
             {
                 // Remove from cart
@@ -223,7 +230,7 @@ namespace BookSite.Areas.Customer.Controllers
         }
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProductId == cartId, tracked: true);
+            var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProdId == cartId, tracked: true);
 
             // Remove the number from after cart icon
             _unitOfWork.ShoppingCartRepository.Remove(cartFromDb);

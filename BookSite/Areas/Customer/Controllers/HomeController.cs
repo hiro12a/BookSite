@@ -22,7 +22,7 @@ namespace BookSite.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category");
+            IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category,ImageManagers");
             return View(products);
         }
 
@@ -30,9 +30,9 @@ namespace BookSite.Areas.Customer.Controllers
         {
             ShoppingCart cart = new()
             {
-                Product = _unitOfWork.ProductRepository.Get(u => u.ProductId == id, includeProperties: "Category"),
+                Product = _unitOfWork.ProductRepository.Get(u => u.ProductId == id, includeProperties: "Category,ImageManagers"),
                 Count = 1,
-                ProductId = id
+                ProdId = id
             };
             return View(cart);
         }
@@ -46,7 +46,7 @@ namespace BookSite.Areas.Customer.Controllers
 
 
             // Check for existing item
-            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && u.ProductId == cart.ProductId);
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && u.ProdId == cart.ProdId);
             if(cartFromDb != null)
             {
                 // Shopping cart exist

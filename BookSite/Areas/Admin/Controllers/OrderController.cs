@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.Checkout;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace BookSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -47,7 +47,7 @@ namespace BookSite.Areas.Admin.Controllers
             OrderVM.OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
            
             var domain = Request.Scheme + "://" + Request.Host.Value + "/"; // Get domain dynamically
-            var options = new Stripe.Checkout.SessionCreateOptions
+            var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"Admin/Order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}",
                 CancelUrl = domain + $"Admin/Order/Details?orderId={OrderVM.OrderHeader.Id}",
@@ -201,14 +201,14 @@ namespace BookSite.Areas.Admin.Controllers
 
         #region API Calls
         [HttpGet]
-        public IActionResult GetAll(int? id)
+        public IActionResult GetAll(string status)
         {
             // Manage orders so that users can only see what they ordered unless its an admin or employee
-            IEnumerable<OrderHeader> orderHeadersrties;
+            IEnumerable<OrderHeader> objOrderHeader;
             // Let admin or employees see every orders
             if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
             {
-                orderHeadersrties = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();  
+                objOrderHeader = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();  
             }
             // Let users see only theirs
             else
@@ -216,10 +216,28 @@ namespace BookSite.Areas.Admin.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                orderHeadersrties = _unitOfWork.OrderHeaderRepository.
+                objOrderHeader = _unitOfWork.OrderHeaderRepository.
                     GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
             }
-            return Json(new { data = orderHeadersrties });
+
+            switch (status)
+            {
+                case "pending":
+                    objOrderHeader = objOrderHeader.Where(u => u.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment);
+                    break;
+                case "inprocess":
+                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusInProcess);
+                    break;
+                case "completed":
+                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusShipped);
+                    break;
+                case "approved":
+                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusApproved);
+                    break;
+                default:
+                    break;
+            }
+            return Json(new { data = objOrderHeader });
         }
         #endregion
     }

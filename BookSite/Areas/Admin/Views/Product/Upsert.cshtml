@@ -61,8 +61,19 @@
                     </div>
                     </div>
                 <div class="col-5">
-                    <img src="@Model.Product.ImageUrl" width="100%"
-                         style="border-radius:5px; border:1px solid #bbb9b9" />
+                    @if(Model.Product.ImageManagers != null) // Check if there are images
+                    {
+                        foreach(var image in Model.Product.ImageManagers)
+                        {
+                            <div class="border p-1 m-2 text-center">
+                                <img src="@image.ImageUrl" width="100%"
+                                     style="border-radius:5px; border:1px solid #bbb9b9" />
+                                     <a asp-action="DeleteImage" class="btn btn-danger" asp-route-imageId="@image.Id">
+                                         <i class="bi bi-trash-fill"></i>
+                                     </a>
+                           </div>
+                        }
+                    }      
                 </div>
                 </div>
             <div class="row pt-2">

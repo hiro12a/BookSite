@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Book.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class update : Migration
+    public partial class fixedSee : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -93,8 +93,7 @@ namespace Book.Database.Migrations
                     Price = table.Column<double>(type: "float", nullable: false),
                     Price50 = table.Column<double>(type: "float", nullable: false),
                     Price100 = table.Column<double>(type: "float", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,7 +140,26 @@ namespace Book.Database.Migrations
                         name: "FK_AspNetUsers_Companys_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companys",
-                        principalColumn: "CompanyId",
+                        principalColumn: "CompanyId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImageManagers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProdId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageManagers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImageManagers_Products_ProdId",
+                        column: x => x.ProdId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -272,7 +290,7 @@ namespace Book.Database.Migrations
                 {
                     CartId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProdId = table.Column<int>(type: "int", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -286,8 +304,8 @@ namespace Book.Database.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ShoppingCarts_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_ShoppingCarts_Products_ProdId",
+                        column: x => x.ProdId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
@@ -300,7 +318,7 @@ namespace Book.Database.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderHeaderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProdId = table.Column<int>(type: "int", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false)
                 },
@@ -314,8 +332,8 @@ namespace Book.Database.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_OrderDetails_Products_ProdId",
+                        column: x => x.ProdId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
@@ -333,14 +351,17 @@ namespace Book.Database.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "ProductId", "Author", "CategoryId", "Description", "ImageUrl", "ListPrice", "Price", "Price100", "Price50", "Title" },
+                columns: new[] { "ProductId", "Author", "CategoryId", "Description", "ListPrice", "Price", "Price100", "Price50", "Title" },
                 values: new object[,]
                 {
-                    { 1, "John Doe", 1, "A fortune teller discovered a huge secrete that will change his life forver", "", 99.0, 90.0, 80.0, 85.0, "Fortune Teller" },
-                    { 2, "Thomas Wayne", 2, "Read about how this young woman came from being poor to being rich", "", 40.0, 30.0, 20.0, 25.0, "Miss fortune" },
-                    { 3, "Neko Sorry", 3, "A book on how to be a lazy bum", "", 60.0, 50.0, 40.0, 45.0, "Lazy Bum" },
-                    { 4, "Man Two", 1, "A story of how a man who doesn't like to shower became a hero", "", 50.0, 40.0, 30.0, 35.0, "Stinky Hero" },
-                    { 5, "Nick Enry", 2, "Even though he is small, he has the strongest will of them all", "", 75.0, 65.0, 55.0, 60.0, "Little Man" }
+                    { 1, "Xuan Huang", 1, "At the moment when life ceased to exist, Ye Zhongming returned to ten years ago, to that afternoon when the apocalypse began.\r\n\r\nWas it heaven’s favor or another punishment? Did he really have to re-live the cruel and frigid end of the world? Ye Zhongming decided to survive, not for anything else, but for those comrades who had fought and died together, for his unwavering lover! And he wanted to find answers.", 25.0, 40.0, 30.0, 35.0, "Apocalypse Gachapon" },
+                    { 2, "Koi Wol Wol", 2, "When I cleared the final chapter of a game that was a national failure, I became an unnamed side character in it.\r\n\r\nA non-standard, unmeasurable, EX rank side character.", 40.0, 30.0, 20.0, 25.0, "Ex Rank Supporting Roles Replay in a Prestigious School" },
+                    { 3, "Tu Yue Guan", 3, "In 20XX, a few tomb robbers in the Northwest Desert entered an underground tomb and accidentally discovered that there was a young male corpse that had not decayed for a thousand years, and the wall of the tomb was engraved with Xu Fu Dongdu* looking for longevity- the epitome of medicine. Everyone was overjoyed, and brought out the things in the tomb…", 60.0, 50.0, 40.0, 45.0, "He Came From the Grave" },
+                    { 4, "Kim Nam Jae", 1, "Yong Muryun, the Pope of the Demon Church who had been betrayed and killed. He has come back from hell in order to punish those who had killed him.", 50.0, 40.0, 30.0, 35.0, "Hell King" },
+                    { 5, "Kumanano", 2, "Yuna, a 15 years old girl started playing the world’s first VRMMO. She has earned billions of yen in stocks. She confines herself in her house playing the game without going to school. Today, a huge update has arrived. She obtains a non-transferable rare bear outfit. But the equipment is so embarrassing that she can’t wear it even in the game.", 75.0, 65.0, 55.0, 60.0, "Kuma Kuma Kuma Bear" },
+                    { 6, "Mei Changsheng", 3, "This is the story of a man who has succeeded in evolving his mortal body and soul into that of a God.", 75.0, 55.0, 45.0, 50.0, "Lord of Glory" },
+                    { 7, "Lin Di Er", 3, "Nurse Bai Yan and Mayor’s assistant Kang Jian suddenly got married, but they realized that this was not a Cinderella and Prince storyline. He already had a lover in his arms, and there were political enemies watching from behind. Her mother-in-law regarded her as a thorn in her eye, while her father-in-law and her mother were old acquaintances. It was all very confusing.", 65.0, 60.0, 45.0, 55.0, "Paper Rose" },
+                    { 8, "Toika", 1, "The blacksmith Anvil created weapons alone in a ruined world. He came across a community, a hero universe, where there are heroes of every dimension.l", 55.0, 45.0, 35.0, 40.0, "VIP" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -388,14 +409,19 @@ namespace Book.Database.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ImageManagers_ProdId",
+                table: "ImageManagers",
+                column: "ProdId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderHeaderId",
                 table: "OrderDetails",
                 column: "OrderHeaderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_ProductId",
+                name: "IX_OrderDetails_ProdId",
                 table: "OrderDetails",
-                column: "ProductId");
+                column: "ProdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderHeaders_ApplicationUserId",
@@ -413,9 +439,9 @@ namespace Book.Database.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShoppingCarts_ProductId",
+                name: "IX_ShoppingCarts_ProdId",
                 table: "ShoppingCarts",
-                column: "ProductId");
+                column: "ProdId");
         }
 
         /// <inheritdoc />
@@ -435,6 +461,9 @@ namespace Book.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ImageManagers");
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");

@@ -112,12 +112,12 @@ namespace Book.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProdId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProdId");
 
                     b.ToTable("ImageManagers");
                 });
@@ -139,14 +139,14 @@ namespace Book.Database.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProdId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProdId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -272,62 +272,98 @@ namespace Book.Database.Migrations
                         new
                         {
                             ProductId = 1,
-                            Author = "John Doe",
+                            Author = "Xuan Huang",
                             CategoryId = 1,
-                            Description = "A fortune teller discovered a huge secrete that will change his life forver",
-                            ListPrice = 99.0,
-                            Price = 90.0,
-                            Price100 = 80.0,
-                            Price50 = 85.0,
-                            Title = "Fortune Teller"
+                            Description = "At the moment when life ceased to exist, Ye Zhongming returned to ten years ago, to that afternoon when the apocalypse began.\r\n\r\nWas it heaven’s favor or another punishment? Did he really have to re-live the cruel and frigid end of the world? Ye Zhongming decided to survive, not for anything else, but for those comrades who had fought and died together, for his unwavering lover! And he wanted to find answers.",
+                            ListPrice = 25.0,
+                            Price = 40.0,
+                            Price100 = 30.0,
+                            Price50 = 35.0,
+                            Title = "Apocalypse Gachapon"
                         },
                         new
                         {
                             ProductId = 2,
-                            Author = "Thomas Wayne",
+                            Author = "Koi Wol Wol",
                             CategoryId = 2,
-                            Description = "Read about how this young woman came from being poor to being rich",
+                            Description = "When I cleared the final chapter of a game that was a national failure, I became an unnamed side character in it.\r\n\r\nA non-standard, unmeasurable, EX rank side character.",
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price100 = 20.0,
                             Price50 = 25.0,
-                            Title = "Miss fortune"
+                            Title = "Ex Rank Supporting Roles Replay in a Prestigious School"
                         },
                         new
                         {
                             ProductId = 3,
-                            Author = "Neko Sorry",
+                            Author = "Tu Yue Guan",
                             CategoryId = 3,
-                            Description = "A book on how to be a lazy bum",
+                            Description = "In 20XX, a few tomb robbers in the Northwest Desert entered an underground tomb and accidentally discovered that there was a young male corpse that had not decayed for a thousand years, and the wall of the tomb was engraved with Xu Fu Dongdu* looking for longevity- the epitome of medicine. Everyone was overjoyed, and brought out the things in the tomb…",
                             ListPrice = 60.0,
                             Price = 50.0,
                             Price100 = 40.0,
                             Price50 = 45.0,
-                            Title = "Lazy Bum"
+                            Title = "He Came From the Grave"
                         },
                         new
                         {
                             ProductId = 4,
-                            Author = "Man Two",
+                            Author = "Kim Nam Jae",
                             CategoryId = 1,
-                            Description = "A story of how a man who doesn't like to shower became a hero",
+                            Description = "Yong Muryun, the Pope of the Demon Church who had been betrayed and killed. He has come back from hell in order to punish those who had killed him.",
                             ListPrice = 50.0,
                             Price = 40.0,
                             Price100 = 30.0,
                             Price50 = 35.0,
-                            Title = "Stinky Hero"
+                            Title = "Hell King"
                         },
                         new
                         {
                             ProductId = 5,
-                            Author = "Nick Enry",
+                            Author = "Kumanano",
                             CategoryId = 2,
-                            Description = "Even though he is small, he has the strongest will of them all",
+                            Description = "Yuna, a 15 years old girl started playing the world’s first VRMMO. She has earned billions of yen in stocks. She confines herself in her house playing the game without going to school. Today, a huge update has arrived. She obtains a non-transferable rare bear outfit. But the equipment is so embarrassing that she can’t wear it even in the game.",
                             ListPrice = 75.0,
                             Price = 65.0,
                             Price100 = 55.0,
                             Price50 = 60.0,
-                            Title = "Little Man"
+                            Title = "Kuma Kuma Kuma Bear"
+                        },
+                        new
+                        {
+                            ProductId = 6,
+                            Author = "Mei Changsheng",
+                            CategoryId = 3,
+                            Description = "This is the story of a man who has succeeded in evolving his mortal body and soul into that of a God.",
+                            ListPrice = 75.0,
+                            Price = 55.0,
+                            Price100 = 45.0,
+                            Price50 = 50.0,
+                            Title = "Lord of Glory"
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            Author = "Lin Di Er",
+                            CategoryId = 3,
+                            Description = "Nurse Bai Yan and Mayor’s assistant Kang Jian suddenly got married, but they realized that this was not a Cinderella and Prince storyline. He already had a lover in his arms, and there were political enemies watching from behind. Her mother-in-law regarded her as a thorn in her eye, while her father-in-law and her mother were old acquaintances. It was all very confusing.",
+                            ListPrice = 65.0,
+                            Price = 60.0,
+                            Price100 = 45.0,
+                            Price50 = 55.0,
+                            Title = "Paper Rose"
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            Author = "Toika",
+                            CategoryId = 1,
+                            Description = "The blacksmith Anvil created weapons alone in a ruined world. He came across a community, a hero universe, where there are heroes of every dimension.l",
+                            ListPrice = 55.0,
+                            Price = 45.0,
+                            Price100 = 35.0,
+                            Price50 = 40.0,
+                            Title = "VIP"
                         });
                 });
 
@@ -346,14 +382,14 @@ namespace Book.Database.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProdId")
                         .HasColumnType("int");
 
                     b.HasKey("CartId");
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProdId");
 
                     b.ToTable("ShoppingCarts");
                 });
@@ -597,7 +633,7 @@ namespace Book.Database.Migrations
                 {
                     b.HasOne("Book.Models.Product", "Product")
                         .WithMany("ImageManagers")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -614,7 +650,7 @@ namespace Book.Database.Migrations
 
                     b.HasOne("Book.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -655,7 +691,7 @@ namespace Book.Database.Migrations
 
                     b.HasOne("Book.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

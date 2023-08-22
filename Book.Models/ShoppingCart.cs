@@ -13,8 +13,8 @@ namespace Book.Models
     {
         [Key]
         public int CartId { get; set; }
-        public int ProductId { get; set; }
-        [ForeignKey(nameof(ProductId))]
+        public int ProdId { get; set; }
+        [ForeignKey(nameof(ProdId))]
         [ValidateNever]
         public Product Product { get; set; }
         [Range(1,1000, ErrorMessage = "Count must be between 1-1000")]
