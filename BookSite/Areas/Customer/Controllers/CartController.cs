@@ -18,7 +18,7 @@ namespace BookSite.Areas.Customer.Controllers
         private readonly IUnitOfWork _unitOfWork;
         public CartVM _cartVm;
         public CartController(IUnitOfWork unitOfWork)
-        { 
+        {
             _unitOfWork = unitOfWork;
         }
         public IActionResult ViewCart()
@@ -37,7 +37,7 @@ namespace BookSite.Areas.Customer.Controllers
             foreach (var cart in _cartVm.ShoppingCartList)
             {
                 cart.Product.ImageManagers = images.Where(u => u.ProdId == cart.Product.ProductId).ToList();
-                cart.Price = GetPriceBasedOnQuantity(cart);     
+                cart.Price = GetPriceBasedOnQuantity(cart);
                 _cartVm.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
 
@@ -58,7 +58,7 @@ namespace BookSite.Areas.Customer.Controllers
             _cartVm.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
             _cartVm.OrderHeader.Name = _cartVm.OrderHeader.ApplicationUser.Name;
-          
+
             _cartVm.OrderHeader.PhoneNumber = _cartVm.OrderHeader.ApplicationUser.PhoneNumber;
             _cartVm.OrderHeader.StreetAddress = _cartVm.OrderHeader.ApplicationUser.StreetAddress;
             _cartVm.OrderHeader.City = _cartVm.OrderHeader.ApplicationUser.City;
@@ -91,16 +91,16 @@ namespace BookSite.Areas.Customer.Controllers
 
             ApplicationUser appUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
-           
+
 
             foreach (var cart in cartVM.ShoppingCartList)
-            {        
+            {
                 cart.Price = GetPriceBasedOnQuantity(cart);
-                cartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);        
+                cartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
 
             // User GetValueOrDefault because companyId can be null
-            if(appUser.CompanyId.GetValueOrDefault() == 0)
+            if (appUser.CompanyId.GetValueOrDefault() == 0)
             {
                 // Regular account and need to capture payment
                 cartVM.OrderHeader.PaymentStatus = StaticDetail.PaymentStatusPending;
@@ -115,7 +115,7 @@ namespace BookSite.Areas.Customer.Controllers
             _unitOfWork.OrderHeaderRepository.Add(cartVM.OrderHeader);
             _unitOfWork.Save();
 
-            foreach(var cart in cartVM.ShoppingCartList)
+            foreach (var cart in cartVM.ShoppingCartList)
             {
                 OrderDetails orderDetails = new()
                 {
@@ -137,13 +137,13 @@ namespace BookSite.Areas.Customer.Controllers
                 var domain = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    SuccessUrl = domain+ $"Customer/Cart/OrderConfirmation/{cartVM.OrderHeader.Id}",
-                    CancelUrl = domain+"Customer/Cart/ViewCart",
+                    SuccessUrl = domain + $"Customer/Cart/OrderConfirmation/{cartVM.OrderHeader.Id}",
+                    CancelUrl = domain + "Customer/Cart/ViewCart",
                     LineItems = new List<SessionLineItemOptions>(),
                     Mode = "payment",
                 };
 
-                foreach(var item in cartVM.ShoppingCartList)
+                foreach (var item in cartVM.ShoppingCartList)
                 {
                     var sessionLineItem = new SessionLineItemOptions
                     {
@@ -178,12 +178,12 @@ namespace BookSite.Areas.Customer.Controllers
         {
             // Update Payment Status
             OrderHeader orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == id, includeProperties: "ApplicationUser");
-            if(orderHeader.PaymentStatus != StaticDetail.PaymentStatusDelayedPayment)
+            if (orderHeader.PaymentStatus != StaticDetail.PaymentStatusDelayedPayment)
             {
                 var service = new Stripe.Checkout.SessionService();
                 Stripe.Checkout.Session session = service.Get(orderHeader.SessionId);
 
-                if(session.PaymentStatus.ToLower() == "paid")
+                if (session.PaymentStatus.ToLower() == "paid")
                 {
                     _unitOfWork.OrderHeaderRepository.UpdateStripePaymentID(id, session.Id, session.PaymentIntentId);
                     _unitOfWork.OrderHeaderRepository.UpdateStatus(id, StaticDetail.StatusApproved, StaticDetail.StatusApproved);
@@ -212,7 +212,7 @@ namespace BookSite.Areas.Customer.Controllers
         public IActionResult Minus(int cartId)
         {
             var cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ProdId == cartId, tracked: true);
-            if(cartFromDb.Count <= 1) 
+            if (cartFromDb.Count <= 1)
             {
                 // Remove from cart
                 // Remove the number from after cart icon
@@ -244,15 +244,15 @@ namespace BookSite.Areas.Customer.Controllers
         //Calculate Price
         private double GetPriceBasedOnQuantity(ShoppingCart cart)
         {
-            if(cart.Count <= 50)
+            if (cart.Count <= 50)
             {
                 return cart.Product.Price;
             }
-            else if(cart.Count <= 100)
+            else if (cart.Count <= 100)
             {
                 return cart.Product.Price50;
             }
-            else if(cart.Count > 100)
+            else if (cart.Count > 100)
             {
                 return cart.Product.Price100;
             }

@@ -31,8 +31,8 @@ namespace BookSite.Areas.Admin.Controllers
         {
             OrderVM = new()
             {
-                OrderHeader = _unitOfWork.OrderHeaderRepository.Get(u=>u.Id == orderId, includeProperties: "ApplicationUser"),
-                OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u=>u.OrderHeaderId == orderId, includeProperties: "Product")
+                OrderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
+                OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Product")
             };
 
             return View(OrderVM);
@@ -45,7 +45,7 @@ namespace BookSite.Areas.Admin.Controllers
         {
             OrderVM.OrderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
             OrderVM.OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
-           
+
             var domain = Request.Scheme + "://" + Request.Host.Value + "/"; // Get domain dynamically
             var options = new SessionCreateOptions
             {
@@ -73,8 +73,8 @@ namespace BookSite.Areas.Admin.Controllers
                 options.LineItems.Add(sessionLineItem);
             }
 
-            var service = new Stripe.Checkout.SessionService();
-            Stripe.Checkout.Session session = service.Create(options);
+            var service = new SessionService();
+            Session session = service.Create(options);
             _unitOfWork.OrderHeaderRepository.UpdateStripePaymentID(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
             _unitOfWork.Save();
             Response.Headers.Add("Location", session.Url);
@@ -89,8 +89,8 @@ namespace BookSite.Areas.Admin.Controllers
             if (orderHeader.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment)
             {
                 // This is an order by company
-                var service = new Stripe.Checkout.SessionService();
-                Stripe.Checkout.Session session = service.Get(orderHeader.SessionId);
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SessionId);
 
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
@@ -151,18 +151,18 @@ namespace BookSite.Areas.Admin.Controllers
         public IActionResult ShipOrder(int orderId)
         {
             // Retrieve then update
-            var orderHeader = _unitOfWork.OrderHeaderRepository.Get(u=>u.Id == OrderVM.OrderHeader.Id);
+            var orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == OrderVM.OrderHeader.Id);
             orderHeader.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
             orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
             orderHeader.OrderStatus = StaticDetail.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
-            if(orderHeader.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment)
+            if (orderHeader.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment)
             {
                 orderHeader.PaymentDueDate = DateTime.Now.AddDays(30); // Give them 30 days to make the paymenbt
             }
 
 
-            _unitOfWork.OrderHeaderRepository.Update(orderHeader); 
+            _unitOfWork.OrderHeaderRepository.Update(orderHeader);
             _unitOfWork.Save();
             TempData["Success"] = "Order Details Updated Successfully";
             return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
@@ -175,7 +175,7 @@ namespace BookSite.Areas.Admin.Controllers
             var orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == OrderVM.OrderHeader.Id);
 
             // If already paid for, refund them
-            if(orderHeader.PaymentStatus == StaticDetail.PaymentStatusApproved)
+            if (orderHeader.PaymentStatus == StaticDetail.PaymentStatusApproved)
             {
                 var options = new RefundCreateOptions
                 {
@@ -208,11 +208,11 @@ namespace BookSite.Areas.Admin.Controllers
             // Let admin or employees see every orders
             if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
             {
-                objOrderHeader = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();  
+                objOrderHeader = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();             
             }
-            // Let users see only theirs
             else
             {
+                // Let users see only theirs
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -223,7 +223,7 @@ namespace BookSite.Areas.Admin.Controllers
             switch (status)
             {
                 case "pending":
-                    objOrderHeader = objOrderHeader.Where(u => u.PaymentStatus == StaticDetail.PaymentStatusDelayedPayment);
+                    objOrderHeader = objOrderHeader.Where(u => u.PaymentStatus == StaticDetail.StatusPending);
                     break;
                 case "inprocess":
                     objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusInProcess);
@@ -237,6 +237,7 @@ namespace BookSite.Areas.Admin.Controllers
                 default:
                     break;
             }
+
             return Json(new { data = objOrderHeader });
         }
         #endregion

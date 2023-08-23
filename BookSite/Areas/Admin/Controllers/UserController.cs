@@ -100,7 +100,6 @@ namespace BookSite.Areas.Admin.Controllers
             else
             {
                 applicationUser.Name = roleManagementVM.ApplicationUser.Name;
-                applicationUser.Email = roleManagementVM.ApplicationUser.Email;
                 applicationUser.PhoneNumber = roleManagementVM.ApplicationUser.PhoneNumber;
                 applicationUser.StreetAddress = roleManagementVM.ApplicationUser.StreetAddress;
                 applicationUser.City = roleManagementVM.ApplicationUser.City;

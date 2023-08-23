@@ -8,42 +8,24 @@
             </h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Category" asp-action="CreateCategory" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create</a>
+            <a asp-controller="Category" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create</a>
         </div>
     </div>
 </div>
-<table class="table table-bordered table-striped">
+<table id="tblData" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>
-                Category Name
+                Name
             </th>
             <th>
                 Display Order
             </th>
+            <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach(var obj in Model.OrderBy(u=>u.DisplayOder))
-        {
-            <tr>
-                <td>
-                    @obj.Name
-                </td>
-                <td>
-                    @obj.DisplayOder
-                </td>
-                <td>
-                    <div class="w-75 btn-group">
-                        <a asp-controller="Category" asp-action="EditCategory" asp-route-id="@obj.CatId" class="btn btn-primary mx-2">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@obj.CatId" class="btn btn-danger mx-2">
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
+
+@section Scripts{
+    <script src="~/js/category.js"></script>
+}

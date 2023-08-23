@@ -5,6 +5,10 @@ using Book.Models;
 using Book.Database.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Book.Utilities;
+using Book.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Stripe;
 
 namespace BookSite.Areas.Admin.Controllers
 {
@@ -17,58 +21,57 @@ namespace BookSite.Areas.Admin.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
-        // Create Category 
         public IActionResult CategoryView()
         {
             IEnumerable<Category> objCategories = _unitOfWork.CategoryRepository.GetAll().ToList();
             return View(objCategories);
         }
-        public IActionResult CreateCategory(Category cat)
-        {
-            if (cat.Name == cat.DisplayOder.ToString())
-            {
-                ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
-            }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.CategoryRepository.Add(cat);
-                _unitOfWork.Save();
-                TempData["success"] = "Category Created Successfully";
-                return RedirectToAction("CategoryView");
-            }
-            return View();
-        }
 
-        // Edit Category 
-        public IActionResult EditCategory(int? catId)
+        // Create Category 
+        public IActionResult Upsert(int? id)
         {
-            if (catId == null || catId == 0)
+            if (id == null || id == 0)
             {
-                return NotFound();
+                // Create
+               return View(new Category());
+            
+            }
+            else
+            {
+                // Update, only return one record
+                Category Category = _unitOfWork.CategoryRepository.Get(u => u.CatId == id);
+                return View(Category);
             }
 
-            Category? categoryFromDb = _unitOfWork.CategoryRepository.Get(u => u.CatId == catId);
-            if (categoryFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(categoryFromDb);
         }
         [HttpPost]
-        public IActionResult EditCategory(Category cat)
+        public IActionResult Upsert(Category cat)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.CategoryRepository.Update(cat);
+                if (cat.Name == cat.DisplayOder.ToString())
+                {
+                    ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
+                }
+
+                if (cat.CatId == 0)
+                {
+                    _unitOfWork.CategoryRepository.Add(cat);
+                }
+                else
+                {
+                    _unitOfWork.CategoryRepository.Update(cat);
+                }
+
                 _unitOfWork.Save();
-                TempData["success"] = "Category Updated Successfully";
+
                 return RedirectToAction("CategoryView");
-            }
+
+            }           
             return View();
         }
 
-        // Edit Category 
+        // Delete Category 
         public IActionResult DeleteCategory(int? catId)
         {
             if (catId == null || catId == 0)
@@ -97,5 +100,15 @@ namespace BookSite.Areas.Admin.Controllers
             TempData["success"] = "Category Deleted Successfully";
             return RedirectToAction("CategoryView");
         }
+
+        #region API Calls
+        [HttpGet]
+        public IActionResult GetAll(int? id)
+        {
+            List<Category> categories = _unitOfWork.CategoryRepository.GetAll().ToList();
+            return Json(new { data = categories });
+        }
+        #endregion
+
     }
 }
