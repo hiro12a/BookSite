@@ -12,7 +12,6 @@ namespace Book.Database.Repository
     {
         private ApplicationDbContext _db;
         public ICategoryRepository CategoryRepository { get; private set; }
-
         public IProductRepository ProductRepository {get; private set; }
         public ICompanyRepository CompanyRepository { get; private set; }
         public IShoppingCartRepository ShoppingCartRepository { get; private set; }

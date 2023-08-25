@@ -40,7 +40,7 @@ namespace Book.Database.Migrations
 
                     b.HasKey("CatId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -97,7 +97,7 @@ namespace Book.Database.Migrations
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Companys");
+                    b.ToTable("Companys", (string)null);
                 });
 
             modelBuilder.Entity("Book.Models.ImageManager", b =>
@@ -119,7 +119,7 @@ namespace Book.Database.Migrations
 
                     b.HasIndex("ProdId");
 
-                    b.ToTable("ImageManagers");
+                    b.ToTable("ImageManagers", (string)null);
                 });
 
             modelBuilder.Entity("Book.Models.OrderDetails", b =>
@@ -148,7 +148,7 @@ namespace Book.Database.Migrations
 
                     b.HasIndex("ProdId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Book.Models.OrderHeader", b =>
@@ -224,7 +224,7 @@ namespace Book.Database.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("Book.Models.Product", b =>
@@ -266,7 +266,7 @@ namespace Book.Database.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -391,7 +391,7 @@ namespace Book.Database.Migrations
 
                     b.HasIndex("ProdId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

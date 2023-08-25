@@ -9,6 +9,7 @@ namespace Book.Database.Repository.IRepository
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {
-        public void Update(ApplicationUser applicationUser);
+        void Update(ApplicationUser obj);
+       
     }
 }

@@ -13,6 +13,7 @@ using System.Security.Claims;
 namespace BookSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -57,7 +58,7 @@ namespace BookSite.Areas.Admin.Controllers
 
             foreach (var item in OrderVM.OrderDetails)
             {
-                var sessionLineItem = new SessionLineItemOptions
+                var sessionLineItem = new Stripe.Checkout.SessionLineItemOptions
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
@@ -92,6 +93,7 @@ namespace BookSite.Areas.Admin.Controllers
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);
 
+                // Order by customer
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
                     _unitOfWork.OrderHeaderRepository.UpdateStripePaymentID(orderHeaderId, session.Id, session.PaymentIntentId);

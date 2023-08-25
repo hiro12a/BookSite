@@ -24,9 +24,9 @@ namespace Book.Database.Repository
             _db.SaveChanges();
         }
 
-        public void Update(ApplicationUser applicationUser)
+        public void Update(ApplicationUser obj)
         {
-            _db.ApplicationUsers.Update(applicationUser);
+            _db.ApplicationUsers.Update(obj);
         }
     }
 }

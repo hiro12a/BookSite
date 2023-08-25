@@ -2,6 +2,7 @@
 using Book.Models;
 using Book.Models.ViewModels;
 using Book.Utilities;
+using BookSite.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -188,15 +189,16 @@ namespace BookSite.Areas.Customer.Controllers
                     _unitOfWork.OrderHeaderRepository.UpdateStripePaymentID(id, session.Id, session.PaymentIntentId);
                     _unitOfWork.OrderHeaderRepository.UpdateStatus(id, StaticDetail.StatusApproved, StaticDetail.StatusApproved);
                     _unitOfWork.Save();
-                }
-                // Remove items from shopping cart and make it empty
-                IEnumerable<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.
-                    GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
-                _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
-                _unitOfWork.Save();
+                }   
 
                 HttpContext.Session.Clear();
             }
+
+            // Remove items from shopping cart and make it empty
+            List<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.
+                GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+            _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
+            _unitOfWork.Save();
 
             return View(id);
         }

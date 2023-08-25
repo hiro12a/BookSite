@@ -46,25 +46,25 @@ namespace BookSite.Areas.Customer.Controllers
 
 
             // Check for existing item
-            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && u.ProdId == cart.ProdId);
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && 
+            u.ProdId == cart.ProdId);
             if(cartFromDb != null)
             {
                 // Shopping cart exist
                 cartFromDb.Count += cart.Count; // Ads onto cart
                 _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
-                _unitOfWork.Save();
             }
             else
             {
                 // Add Cart
                 _unitOfWork.ShoppingCartRepository.Add(cart);
-                _unitOfWork.Save();
 
                 // Set session to display a number for the cart icon
                 HttpContext.Session.SetInt32(StaticDetail.SessionCart,
                     _unitOfWork.ShoppingCartRepository.GetAll(u=>u.ApplicationUserId == userId).Count());
                 
-            }     
+            }
+            _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 

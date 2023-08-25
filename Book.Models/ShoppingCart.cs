@@ -21,7 +21,7 @@ namespace Book.Models
         public int Count { get; set; }
 
         public string ApplicationUserId { get; set; }
-        [ForeignKey(nameof(ApplicationUserId))]
+        [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
 
