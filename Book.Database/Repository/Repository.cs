@@ -19,7 +19,7 @@ namespace Book.Database.Repository
         {
             _db = db;
             this.dbSet = _db.Set<T>();
-            _db.Products.Include(u => u.Category);
+            _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
         }
 
         public void Add(T item)

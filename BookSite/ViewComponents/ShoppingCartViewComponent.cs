@@ -22,7 +22,7 @@ namespace BookSite.ViewComponents
                 if (HttpContext.Session.GetInt32(StaticDetail.SessionCart) == null)
                 {
                     HttpContext.Session.SetInt32(StaticDetail.SessionCart,
-                _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId.Value).Count());
+                    _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId.Value).Count());
                 }
                 
                 return View(HttpContext.Session.GetInt32(StaticDetail.SessionCart));

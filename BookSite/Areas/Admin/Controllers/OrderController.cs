@@ -205,42 +205,42 @@ namespace BookSite.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll(string status)
         {
-            // Manage orders so that users can only see what they ordered unless its an admin or employee
-            IEnumerable<OrderHeader> objOrderHeader;
-            // Let admin or employees see every orders
+            IEnumerable<OrderHeader> objOrderHeaders;
+
+
             if (User.IsInRole(StaticDetail.Role_Admin) || User.IsInRole(StaticDetail.Role_Employee))
             {
-                objOrderHeader = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();             
+                objOrderHeaders = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();
             }
             else
             {
-                // Let users see only theirs
+
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objOrderHeader = _unitOfWork.OrderHeaderRepository.
-                    GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+                objOrderHeaders = _unitOfWork.OrderHeaderRepository
+                    .GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
             }
 
             switch (status)
             {
                 case "pending":
-                    objOrderHeader = objOrderHeader.Where(u => u.PaymentStatus == StaticDetail.StatusPending);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == StaticDetail.StatusPending);
                     break;
                 case "inprocess":
-                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusInProcess);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == StaticDetail.StatusInProcess);
                     break;
                 case "completed":
-                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusShipped);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == StaticDetail.StatusShipped);
                     break;
                 case "approved":
-                    objOrderHeader = objOrderHeader.Where(u => u.OrderStatus == StaticDetail.StatusApproved);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == StaticDetail.StatusApproved);
                     break;
                 default:
                     break;
             }
 
-            return Json(new { data = objOrderHeader });
+            return Json(new { data = objOrderHeaders });
         }
         #endregion
     }

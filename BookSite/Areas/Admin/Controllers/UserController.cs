@@ -65,7 +65,7 @@ namespace BookSite.Areas.Admin.Controllers
             ApplicationUser applicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == roleManagementVM.ApplicationUser.Id);
 
             // Check if the role is changed
-            if (roleManagementVM.ApplicationUser.Role != oldRole)
+            if (!(roleManagementVM.ApplicationUser.Role == oldRole))
             {
 
                 // Check if the user is from a company, if so then assign one of the companies to the user
@@ -91,23 +91,22 @@ namespace BookSite.Areas.Admin.Controllers
                 _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();                         
             }
             // Check if only company is updated 
-            else if (oldRole==StaticDetail.Role_Company && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
-            {
-                applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
-                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
-                _unitOfWork.Save();
-            }
             else
             {
-                applicationUser.Name = roleManagementVM.ApplicationUser.Name;
-                applicationUser.PhoneNumber = roleManagementVM.ApplicationUser.PhoneNumber;
-                applicationUser.StreetAddress = roleManagementVM.ApplicationUser.StreetAddress;
-                applicationUser.City = roleManagementVM.ApplicationUser.City;
-                applicationUser.State = roleManagementVM.ApplicationUser.State;
-                applicationUser.PostalCode = roleManagementVM.ApplicationUser.PostalCode;
-                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
-                _unitOfWork.Save();
+                if (oldRole == StaticDetail.Role_Company && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                    applicationUser.Name = roleManagementVM.ApplicationUser.Name;
+                    applicationUser.PhoneNumber = roleManagementVM.ApplicationUser.PhoneNumber;
+                    applicationUser.StreetAddress = roleManagementVM.ApplicationUser.StreetAddress;
+                    applicationUser.City = roleManagementVM.ApplicationUser.City;
+                    applicationUser.State = roleManagementVM.ApplicationUser.State;
+                    applicationUser.PostalCode = roleManagementVM.ApplicationUser.PostalCode;
+                    _unitOfWork.ApplicationUserRepository.Update(applicationUser);
+                    _unitOfWork.Save();
+                }
             }
+
             return RedirectToAction("Index");
         }
 

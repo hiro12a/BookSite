@@ -17,6 +17,7 @@ namespace BookSite.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public CartVM _cartVm;
         public CartController(IUnitOfWork unitOfWork)
         {
@@ -59,18 +60,15 @@ namespace BookSite.Areas.Customer.Controllers
             _cartVm.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId);
 
             _cartVm.OrderHeader.Name = _cartVm.OrderHeader.ApplicationUser.Name;
-
             _cartVm.OrderHeader.PhoneNumber = _cartVm.OrderHeader.ApplicationUser.PhoneNumber;
             _cartVm.OrderHeader.StreetAddress = _cartVm.OrderHeader.ApplicationUser.StreetAddress;
             _cartVm.OrderHeader.City = _cartVm.OrderHeader.ApplicationUser.City;
             _cartVm.OrderHeader.State = _cartVm.OrderHeader.ApplicationUser.State;
             _cartVm.OrderHeader.PostalCode = _cartVm.OrderHeader.ApplicationUser.PostalCode;
 
-            IEnumerable<ImageManager> images = _unitOfWork.ImageManagerRepository.GetAll();
 
             foreach (var cart in _cartVm.ShoppingCartList)
             {
-                cart.Product.ImageManagers = images.Where(u => u.ProdId == cart.Product.ProductId).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 _cartVm.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
@@ -195,9 +193,11 @@ namespace BookSite.Areas.Customer.Controllers
             }
 
             // Remove items from shopping cart and make it empty
-            List<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCartRepository.
-                GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
-            _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCart);
+
+            List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepository
+                .GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+
+            _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
 
             return View(id);
@@ -250,17 +250,16 @@ namespace BookSite.Areas.Customer.Controllers
             {
                 return cart.Product.Price;
             }
-            else if (cart.Count <= 100)
-            {
-                return cart.Product.Price50;
-            }
-            else if (cart.Count > 100)
-            {
-                return cart.Product.Price100;
-            }
             else
             {
-                return 0;
+                if (cart.Count <= 100)
+                {
+                    return cart.Product.Price50;
+                }
+                else
+                {
+                    return cart.Product.Price100;
+                }
             }
         }
     }

@@ -22,8 +22,16 @@ namespace BookSite.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if(claim != null)
+            {
+                HttpContext.Session.SetInt32(StaticDetail.SessionCart,
+                    _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+            } 
             IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category,ImageManagers");
             return View(products);
+
         }
 
         public IActionResult Details(int id)
@@ -53,15 +61,17 @@ namespace BookSite.Areas.Customer.Controllers
                 // Shopping cart exist
                 cartFromDb.Count += cart.Count; // Ads onto cart
                 _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 // Add Cart
                 _unitOfWork.ShoppingCartRepository.Add(cart);
+                _unitOfWork.Save();
 
                 // Set session to display a number for the cart icon
                 HttpContext.Session.SetInt32(StaticDetail.SessionCart,
-                    _unitOfWork.ShoppingCartRepository.GetAll(u=>u.ApplicationUserId == userId).Count());
+                _unitOfWork.ShoppingCartRepository.GetAll(u=>u.ApplicationUserId == userId).Count());
                 
             }
             _unitOfWork.Save();

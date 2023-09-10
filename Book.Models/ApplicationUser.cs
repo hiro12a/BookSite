@@ -16,7 +16,7 @@ namespace Book.Models
         [Required]
         public string Name { get; set; }
 
-        public string StreetAddress { get; set; }
+        public string? StreetAddress { get; set; }
         public string? City { get; set; }
         public string? State { get; set; }
         public string? PostalCode { get; set; }
@@ -25,7 +25,7 @@ namespace Book.Models
         public int? CompanyId { get; set; }
         [ForeignKey(nameof(CompanyId))]
         [ValidateNever]
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
 
         [NotMapped] // Doesn't add it to the database table 
         public string? Role { get; set; }

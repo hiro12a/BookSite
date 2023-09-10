@@ -11,7 +11,7 @@ namespace Book.Models
 {
     public class ShoppingCart
     {
-        [Key]
+        [Key] 
         public int CartId { get; set; }
         public int ProdId { get; set; }
         [ForeignKey(nameof(ProdId))]
